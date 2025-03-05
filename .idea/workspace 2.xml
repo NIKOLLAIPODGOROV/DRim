@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="67b5f0a9-afb3-4c2f-8c86-b39af6ae6fd2" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="SCSS File" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2sysHcfV2LEXyZD7AT9U3ZCLCKe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "javascript.nodejs.core.library.configured.version": "16.20.2",
+    "javascript.nodejs.core.library.typings.version": "16.18.126",
+    "last_opened_file_path": "/Users/macbookpro/Desktop/папки из диплома/DRim",
+    "list.type.of.created.stylesheet": "SCSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "configurable.group.tools",
+    "ts.external.directory.path": "/Users/macbookpro/Documents/projects/DRim/frontend/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/types" />
+      <recent name="$PROJECT_DIR$/backend" />
+      <recent name="$PROJECT_DIR$/frontend/src/assets/images/page" />
+      <recent name="$PROJECT_DIR$/frontend/src/app/shared/services" />
+      <recent name="$PROJECT_DIR$/frontend/src/assets/images/reviews" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/public/images/articles" />
+      <recent name="$PROJECT_DIR$/frontend/src/assets/images/page/offers" />
+      <recent name="$PROJECT_DIR$/frontend/src/app/views/product" />
+      <recent name="$PROJECT_DIR$/frontend/src/app/core/auth" />
+      <recent name="$PROJECT_DIR$/frontend/src/app/core" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="67b5f0a9-afb3-4c2f-8c86-b39af6ae6fd2" name="Changes" comment="" />
+      <created>1739439064138</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739439064138</updated>
+      <workItem from="1739439065916" duration="10928000" />
+      <workItem from="1739540039155" duration="1382000" />
+      <workItem from="1739541456011" duration="38250000" />
+      <workItem from="1739623110819" duration="15953000" />
+      <workItem from="1739646089362" duration="42480000" />
+      <workItem from="1739774961722" duration="16773000" />
+      <workItem from="1739798258762" duration="15759000" />
+      <workItem from="1739822499357" duration="6757000" />
+      <workItem from="1739874567209" duration="30214000" />
+      <workItem from="1740048317790" duration="127000" />
+      <workItem from="1740048867755" duration="6549000" />
+      <workItem from="1740058396393" duration="125000" />
+      <workItem from="1740058736204" duration="1470000" />
+      <workItem from="1740060370173" duration="105000" />
+      <workItem from="1740060579987" duration="343000" />
+      <workItem from="1740068879179" duration="824000" />
+      <workItem from="1740073169607" duration="88000" />
+      <workItem from="1740073267765" duration="10244000" />
+      <workItem from="1740120863885" duration="768000" />
+      <workItem from="1740121940912" duration="3283000" />
+      <workItem from="1740126969376" duration="26937000" />
+      <workItem from="1740205401168" duration="13113000" />
+      <workItem from="1740223055632" duration="2242000" />
+      <workItem from="1740226903794" duration="26000" />
+      <workItem from="1740226936848" duration="1242000" />
+      <workItem from="1740228268087" duration="13695000" />
+      <workItem from="1740248871711" duration="8927000" />
+      <workItem from="1740301625345" duration="7386000" />
+      <workItem from="1740326702208" duration="2748000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

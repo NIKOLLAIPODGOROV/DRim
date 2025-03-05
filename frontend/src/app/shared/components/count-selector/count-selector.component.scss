@@ -1,0 +1,37 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.comment-reaction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .comment-like {
+    margin-right: 15px;
+
+    .counter {
+      font-weight: 600;
+      font-size: 14px;
+      margin-right: 3px;
+    }
+
+    .reaction-like {
+
+    }
+  }
+
+  .comment-dislike {
+
+    .counter-dislike {
+
+    }
+
+    .reaction-dislike {
+
+    }
+  }
+
+  .comment-sign {
+
+  }
+}

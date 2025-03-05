@@ -1,0 +1,66 @@
+@import "../../../../assets/styles/variables";
+
+.catalog-filter {
+  width: 190px;
+  min-width: 190px;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 16px;
+  cursor: pointer;
+
+  .catalog-filter-head {
+    display: flex;
+    align-items: center;
+    padding: 12px 0 12px 23px;
+    justify-content: space-between;
+    color: $gray-text-color;
+
+    span {
+      margin-right: 8px;
+    }
+  }
+
+  .catalog-filter-body {
+    position: absolute;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 3;
+    display: none;
+    padding: 12px 23px;
+    background: #FFFFFF;
+    border-radius: 0 0 5px 5px;
+    color: #BEBEBE;
+
+    .catalog-filter-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      cursor: pointer;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &.active {
+        color: $gray-text-color;
+      }
+    }
+  }
+
+
+  &.open {
+    width: 257px;
+    min-width: 257px;
+    .catalog-filter-head {
+      color: $gray-text-color;
+      background: $blue-light-text-color;
+      border-radius: 5px 5px 0 0;
+      padding-right: 23px;
+    }
+
+    .catalog-filter-body {
+      display: block;
+    }
+  }
+}
+

@@ -1,0 +1,76 @@
+@import "../../../../assets/styles/variables";
+
+header.header {
+  padding: 40px 0 40px 0;
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    img {
+      width: 85px;
+      height: 47px;
+    }
+
+    .header-content {
+      display: flex;
+      font-weight: 500;
+      font-size: 16px;
+
+      .header-menu {
+        margin-left: 100px;
+        margin-right: 127px;
+
+        nav ul {
+          margin: 0;
+          padding: 0;
+          display: flex;
+
+          li {
+            margin-right: 30px;
+            list-style: none;
+
+            &.active {
+              color: $blue-text-color;
+            }
+
+            a {
+              color: $gray-text-color;
+              cursor: pointer;
+              text-decoration: none;
+            }
+          }
+        }
+      }
+
+      .header-phone {
+        display: flex;
+        align-items: center;
+        color: $blue-text-color;
+        text-decoration: none;
+        margin-right: 141px;
+        &.isLogged {
+          margin-right: 89px;
+        }
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        a {
+          margin-right: 7px;
+
+          span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+
+}

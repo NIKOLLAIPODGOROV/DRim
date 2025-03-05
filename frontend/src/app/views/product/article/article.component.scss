@@ -1,0 +1,226 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.article {
+  padding-top: 80px;
+  padding-bottom: 120px;
+
+  .container {
+    width: 1400px;
+
+    .article-small-head {
+      margin-bottom: 60px;
+      font-weight: 500;
+      font-size: 16px;
+      color: $blue-text-color;
+
+      span {
+        color: $blue-light-text-color;
+      }
+    }
+
+    .article-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 60px;
+
+      div {
+        width: 607px;
+
+        .article-title {
+          @include head-lora-38;
+          margin-bottom: 40px;
+        }
+
+        .article-head-text {
+          @include head-montserrat-20;
+          line-height: 130%;
+        }
+      }
+
+      .article-image {
+        margin-left: 106px;
+      }
+    }
+
+    .main-information {
+      display: flex;
+      align-items: self-start;
+      justify-content: space-between;
+
+      .main-content {
+
+        .article-main-text {
+          font-size: 14px;
+          margin-bottom: 40px;
+          line-height: 130%;
+          max-width: 818px;
+        }
+
+        .block-articles {
+
+          max-width: 818px;
+
+          .title {
+            text-align: start;
+            font-size: 20px;
+            font-weight: 500;
+            color: $blue-text-color;
+            margin-bottom: 20px;
+          }
+
+          .text {
+            font-size: 14px;
+            margin-bottom: 40px;
+            line-height: 130%;
+          }
+
+          .second-article-text-over ol {
+            list-style-position: inside;
+            padding-left: 0;
+
+            .second-article-text-over ol li {
+              padding-left: 0;
+            }
+          }
+        }
+      }
+
+      .extra-info-item {
+
+        .extra-info-item-title {
+          @include head-lora-26;
+          margin-bottom: 20px;
+        }
+
+        padding-top: 60px;
+        display: grid;
+        grid-template-columns: repeat(1, 292px);
+        gap: 60px;
+      }
+    }
+
+    .final-block {
+      max-width: 818px;
+
+      .fourth-article-title {
+        @include head-montserrat-20;
+        margin-bottom: 20px;
+      }
+
+      .text {
+        line-height: 130%;
+        margin-bottom: 60px;
+      }
+
+    }
+
+    .afterwords {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 120px;
+
+      .afterwords-title {
+        font-weight: 500;
+        font-size: 14px;
+        color: $blue-text-color;
+        margin-right: 20px;
+      }
+
+      .socials a {
+        margin-right: 13px;
+      }
+    }
+
+    .comments {
+      max-width: 854px;
+
+      .comments-title {
+        @include head-lora-38;
+        margin-bottom: 20px;
+      }
+
+      .comments-enter {
+        font-size: 14px;
+        margin-bottom: 60px;
+
+        span {
+          color: $blue-text-color;
+          cursor: pointer;
+        }
+
+        &.extra-text {
+          margin-bottom: 40px;
+        }
+
+      }
+
+      .field-for-comments {
+        display: flex;
+        flex-direction: column;
+
+        .my-comment {
+          border: 1px solid $blue-text-color;
+          background-color: #FFFFFF;
+          width: 818px;
+          height: 248px;
+          font-size: 14px;
+          padding: 20px;
+          margin-bottom: 20px;
+          box-sizing: border-box;
+          resize: none;
+
+          &::placeholder {
+            color: #A8ABA7;
+            font-size: 14px;
+          }
+        }
+
+        .button {
+          margin-top: 20px;
+          width: 422px;
+          font-size: 16px;
+          font-weight: 400;
+        }
+      }
+
+      .comments-items {
+
+        .comments-item {
+
+        }
+      }
+    }
+
+    .extra-comments {
+      display: flex;
+      align-items: center;
+      margin-top: 60px;
+
+      .extra-comments-text {
+        @include head-montserrat-20;
+      }
+
+      .extra-comments-arrow {
+        margin-left: 10px;
+      }
+    }
+
+    .extra-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: start;
+      margin-left: 132px;
+      margin-top: -40px;
+
+      .extra-info-title {
+        @include head-lora-26;
+        margin-bottom: 20px;
+      }
+    }
+
+  }
+}

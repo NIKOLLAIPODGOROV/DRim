@@ -1,0 +1,31 @@
+<div class="comment-reaction">
+  <div class="comment-like comment">
+    <div class="counter-like counter">7</div>
+    <div class="reaction-like" (click)="likeCount()">
+      <svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M1.37988 13.35V3.55002C1.37988 2.15002 1.97988 1.65002 3.37988 1.65002H4.37988C5.77988 1.65002 6.37988 2.15002 6.37988 3.55002V13.35C6.37988 14.75 5.77988 15.25 4.37988 15.25H3.37988C1.97988 15.25 1.37988 14.75 1.37988 13.35Z"
+          stroke="#071739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="comment-dislike comment">
+    <div class="counter-dislike counter" [(ngModel)]="count" (change)="countChange()">5</div>
+    <div class="reaction-dislike" (click)="dislikeCount()">
+      <svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M6.62012 2.65V12.45C6.62012 13.85 6.02012 14.35 4.62012 14.35H3.62012C2.22012 14.35 1.62012 13.85 1.62012 12.45V2.65C1.62012 1.25 2.22012 0.75 3.62012 0.75H4.62012C6.02012 0.75 6.62012 1.25 6.62012 2.65Z"
+          stroke="#071739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="comment-sign">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+            stroke="#071739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 8V13" stroke="#071739" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M11.9946 16H12.0036" stroke="#071739" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round"/>
+    </svg>
+  </div>
+</div>
