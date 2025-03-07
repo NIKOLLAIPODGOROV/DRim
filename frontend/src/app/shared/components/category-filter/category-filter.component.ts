@@ -2,7 +2,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ActiveParamsType} from "../../../../types/active-params.type";
 import {ActiveParamsUtils} from "../../utils/active-params.utils";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {ArticleWithType} from "../../../../types/article-with-type.type";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
 import {CategoryType} from "../../../../types/category.type";
 
@@ -18,16 +17,8 @@ export class CategoryFilterComponent implements OnInit {
   // @Output() toggle = new EventEmitter<any[]>()
   open = false;
   activeParams: ActiveParamsType = {categories: []};
-  isChecked: boolean = false;
+  checked: boolean = false;
   type: string | null = null;
-
-
-  get title(): string {
-    if (this.categoryWithType) {
-      return this.categoryWithType.category;
-    }
-    return '';
-  }
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
   }

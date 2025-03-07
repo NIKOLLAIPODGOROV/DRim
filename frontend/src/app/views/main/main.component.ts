@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, TemplateRef, ViewChild,} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild,} from '@angular/core';
 import {ArticleType} from "../../../types/article.type";
 import {OwlOptions} from "ngx-owl-carousel-o";
 import {ArticleService} from "../../shared/services/article.service";
@@ -12,20 +12,21 @@ import {RequestService} from "../../shared/services/request.service";
 import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
 
-   isFormEmpty: boolean = false;
-  @Input()popularArticles: ArticleType[] = [];
-  @Input()article!: ArticleType;
+  isFormEmpty: boolean = false;
+  @Input() popularArticles: ArticleType[] = [];
+  @Input() article!: ArticleType;
   @Input() type!: string;
 
-articles: ArticleType[] = [];
+  articles: ArticleType[] = [];
   customOptions: OwlOptions = {
     loop: true,
     mouseDrag: false,
@@ -126,15 +127,18 @@ articles: ArticleType[] = [];
               private _snackBar: MatSnackBar,
               private dialog: MatDialog,
               private fb: FormBuilder,
-              private router: Router,) { }
+              private router: Router,) {
+  }
+
+  private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-    this.articleService.getPopularArticles()
-      .subscribe(data => {
-        this.popularArticles = data as ArticleType[];
-      });
-  });
+   this.subscription = this.activatedRoute.params.subscribe(params => {
+      this.articleService.getPopularArticles()
+        .subscribe(data => {
+          this.popularArticles = data as ArticleType[];
+        });
+    });
   }
 
   createAuthRequest() {
@@ -150,7 +154,7 @@ articles: ArticleType[] = [];
 
       this.requestService.createAuthRequest(paramsObject)
         .subscribe({
-          next: (data:DefaultResponseType) => {
+          next: (data: DefaultResponseType) => {
             if ((data as DefaultResponseType).error !== undefined) {
               throw new Error(((data as DefaultResponseType).message));
             }
@@ -159,6 +163,7 @@ articles: ArticleType[] = [];
               .subscribe(() => {
                 this.router.navigate(['/']);
               });
+            this.isFormEmpty = true;
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.error.message) {
@@ -191,5 +196,10 @@ articles: ArticleType[] = [];
 
     this.isFormEmpty = true;
   }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
+  }
+
 
 }

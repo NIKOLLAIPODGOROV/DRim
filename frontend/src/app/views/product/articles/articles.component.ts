@@ -1,12 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {CategoryService} from "../../../shared/services/category.service";
 import {ActiveParamsType} from "../../../../types/active-params.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ActiveParamsUtils} from "../../../shared/utils/active-params.utils";
 import {AppliedFilterType} from "../../../../types/applied-filter.type";
- import {debounce, debounceTime} from "rxjs";
-// import {CartService} from "../../../shared/services/cart.service";
-// import {CartType} from "../../../../types/cart.type";
+import {debounceTime, Subscription,} from "rxjs";
+
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {AuthService} from "../../../core/auth/auth.service";
 import {ArticleService} from "../../../shared/services/article.service";
@@ -14,8 +13,6 @@ import {BestArticlesService} from "../../../shared/services/best-articles.servic
 import {ArticleType} from "../../../../types/article.type";
 import {CategoryType} from "../../../../types/category.type";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
-import {PopularArticleType} from "../../../../types/popular-article.type";
-import {CommentType} from "../../../../types/comment.type";
 
 @Component({
   selector: 'articles',
@@ -23,186 +20,133 @@ import {CommentType} from "../../../../types/comment.type";
   styleUrls: ['./articles.component.scss']
 })
 
-export class ArticlesComponent implements OnInit {
+export class ArticlesComponent implements OnInit, OnDestroy  {
 
-   categoriesWithType: CategoryWithTypeType[] = [];
-   category: string | null = null;
-@Input()categories: CategoryType[] = [];
-  @Input()articles: ArticleType[] = [];
-  @Input()article!: ArticleType;
-
+  articles: ArticleType[] = [];
+  categoriesWithType: CategoryWithTypeType[] = [];
+  @Input() categoryWithType: CategoryWithTypeType | null = null;
   activeParams: ActiveParamsType = {categories: []};
   appliedFilters: AppliedFilterType[] = [];
+
+  @Input()category: string | null = null;
+  @Input() categories: CategoryType[] = [];
+  article!: ArticleType;
+
   type: string | null = null;
   pages: number[] = [];
- // cart: any = null;
   open = false;
-  isInFavorite = false;
   isActive = false;
-  popularArticles: PopularArticleType[] = [];
+  popularArticles: ArticleType[] = [];
 
   constructor(private articleService: ArticleService,
               private categoryService: CategoryService,
               private activatedRoute: ActivatedRoute,
-              // private cartService: CartService,
               private bestArticlesService: BestArticlesService,
               private authService: AuthService,
               private router: Router) {
   }
 
+  private subscription: Subscription | null = null;
+
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
+    this.subscription = this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticles(params['url'])
         .subscribe(data => {
-          this.articles = data.items;
-        });
-
-        this.articles = this.articles.map(article => {
-          const productInFavorite = this.articles?.find(item => item.category === 'Фрилас');
-          if (productInFavorite) {
-            // article.isInFavorite = true;
-          }
-          return article;
-        });
-
-
-
-
-      this.articleService.getArticle(this.article.url)
-        .subscribe(data => {
-          this.article = data;
-        });
-
-      this.categoryService.getCategories()
-        .subscribe(data  => {
-          this.categories = data;
-        })
-
-      this.activatedRoute.queryParams.subscribe(params => {
-        this.activeParams = ActiveParamsUtils.processParams(params);
-
-        if (this.category) {
-          this.open = !!(this.activeParams.categories);
-        } else if (this.type) {
-          this.open = !!(this.activeParams.categories);
-        }
-      });
-
-    });
-
-
-    // this.cartService.getCart()
-    //   .subscribe((data: RequestsType | DefaultResponseType) => {
-    //     if ((data as DefaultResponseType).error !== undefined) {
-    //       throw new Error((data as DefaultResponseType).message);
-    //     }
-    //
-    //     this.cart = data as RequestsType;
-
-        if (this.authService.getIsLoggedIn()) {
-          this.bestArticlesService.getPopularArticles()
-            .subscribe(
-              {
-                next:  (data: ArticleType[] | DefaultResponseType) => {
-                  if ((data as DefaultResponseType).error !== undefined) {
-                    const error = (data as DefaultResponseType).message;
-                    this.processCatalog();
-                    throw new Error(error);
-                  }
-
-                  this.popularArticles = data as ArticleType[];
-                  this.processCatalog();
-                },
-                error: (error) => {
-                  this.processCatalog();
-                }
-              });
-        } else {
+          this.articles = data.items as ArticleType[];
           this.processCatalog();
-        }
-    //  });
+        });
+    });
+    this.categoryService.getCategories()
+      .subscribe(data => {
+        this.categories = data as CategoryType[];
+      })
 
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.activeParams = ActiveParamsUtils.processParams(params);
+
+      if (this.category) {
+        this.open = !!(this.activeParams.categories);
+      } else if (this.type) {
+        this.open = !!(this.activeParams.categories);
+      }
+    });
+    this.processCatalog();
   }
-
-  toggle(): void {
-    this.open = !this.open;
-  }
-
 
   processCatalog() {
     this.categoryService.getCategoriesWithFilter()
       .subscribe(data => {
-        this.categoriesWithType = data;
+        this.categoriesWithType = data as CategoryWithTypeType[];
+        console.log(data);
       })
 
-        this.activatedRoute.queryParams
-          .pipe(
-            debounceTime(500)
-          )
-          .subscribe(params => {
-            this.activeParams = ActiveParamsUtils.processParams(params);
+    this.activatedRoute.queryParams
+      .pipe(
+        debounceTime(500)
+      )
+      .subscribe(params => {
 
-            //убираем дубли категорий
-            this.appliedFilters = [];
+        this.activeParams = ActiveParamsUtils.processParams(params);
 
-            this.activeParams.categories.forEach(url => {
-                const foundType = this.categoriesWithType.find(item => item.url === url);
-                   if (foundType) {
-               const filterItem = {
-                  name: foundType.category,
-                  url: foundType.url
-                };
+        //убираем дубли категорий
+        this.appliedFilters = [];
+        this.activeParams.categories.forEach(url => {
+          const foundType = this.categoriesWithType.find(item => item.url === url);
+          if (foundType) {
+            const filterItem = {
+              name: foundType.category,
+              url: foundType.url
+            };
 
-               //Проверяем если элемент уже есть
-               if (!this.appliedFilters.some(item => item.url === filterItem.url)) {
-                 this.appliedFilters.push(filterItem);
-               }
-              }
-            });
+            //Проверяем если элемент уже есть
+            if (!this.appliedFilters.some(item => item.url === filterItem.url)) {
+              this.appliedFilters.push(filterItem);
+            }
+          }
+        });
 
-            this.articleService.getArticles(this.activeParams)
-              .subscribe(data => {
-                this.pages = [];
-                for (let i = 1; i <= data.pages; i++) {
-                  this.pages.push(i);
+        this.articleService.getArticles(this.activeParams)
+          .subscribe(data => {
+            this.pages = [];
+            for (let i = 1; i <= data.pages; i++) {
+              this.pages.push(i);
+            }
+
+            this.articles = data.items as ArticleType[];
+
+            if (this.popularArticles) {
+              this.articles = this.articles.map(article => {
+                const productInFavorite = this.popularArticles?.find(item => item.id === article.id);
+                if (productInFavorite) {
+                  // article.isInFavorite = true;
                 }
-
-                // if (this.cart && this.cart.items.length > 0) {
-                //   this.articles = data.items.map(article => {
-                //     if (this.cart) {
-                //       const productInCart = this.cart.items.find(item  => item.comments.id === article.id);
-                //       if (productInCart) {
-                //         article.countInCart = productInCart.quantity;
-                //       }
-                //     }
-                //     return article;
-                //   });
-                // } else {
-                   this.articles = data.items;
-                //
-                //
-                //
-                // }
-
-                if (this.popularArticles) {
-                  this.articles = this.articles.map(article => {
-                    const productInFavorite = this.popularArticles?.find(item => item.id === article.id);
-                    if (productInFavorite) {
-                      // article.isInFavorite = true;
-                    }
-                    return article;
-                  });
-                }
-
+                return article;
               });
-          });
+            }
 
-     // });
+          });
+      });
+
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.activeParams = ActiveParamsUtils.processParams(params);
+
+      if (this.category && params['categories']) {
+        this.activeParams.categories = Array.isArray(params['categories']) ? params['categories'] : [params['categories']];
+      }
+      if (this.categoryWithType && this.categoryWithType.categories
+        && this.categoryWithType.categories.length > 0 &&
+        this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
+        this.open = true;
+      }
+    });
+
+
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {
     if (appliedFilter.url) {
-       //  delete this.activeParams[appliedFilter.categories.url];
+      //  delete this.activeParams[appliedFilter.categories.url];
     } else {
       this.activeParams.categories = this.activeParams.categories.filter(item => item !== appliedFilter.url);
     }
@@ -212,7 +156,6 @@ export class ArticlesComponent implements OnInit {
       queryParams: this.activeParams
     });
   }
-
 
   openPage(page: number) {
     this.activeParams.pages = page;
@@ -229,6 +172,7 @@ export class ArticlesComponent implements OnInit {
       });
     }
   }
+
   openNextPage() {
     if (this.activeParams.pages && this.activeParams.pages < this.pages.length) {
       this.activeParams.pages++;
@@ -236,5 +180,32 @@ export class ArticlesComponent implements OnInit {
         queryParams: this.activeParams
       });
     }
+  }
+
+  toggle(): void {
+    this.open = !this.open;
+  }
+
+  updateFilterParam(url: string, checked: boolean) {
+    if (this.activeParams.categories && this.activeParams.categories.length > 0) {
+      const existingTypeInParams = this.activeParams.categories.find(item => item === url);
+      if (existingTypeInParams && !checked) {
+        this.activeParams.categories = this.activeParams.categories.filter(item => item !== url);
+      } else if (!existingTypeInParams && checked) {
+         this.activeParams.categories.push(url);
+        this.activeParams.categories = [...this.activeParams.categories, url];
+      }
+    } else if (checked) {
+      this.activeParams.categories = [url];
+    }
+
+    this.activeParams.pages = 1;
+    this.router.navigate(['/articles'], {
+      queryParams: this.activeParams
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
   }
 }

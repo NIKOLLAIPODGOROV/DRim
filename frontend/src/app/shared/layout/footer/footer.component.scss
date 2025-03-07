@@ -105,8 +105,7 @@ footer.footer {
   width: 727px;
   height: 489px;
   position: relative;
-  margin-top: 94px;
-  margin-bottom: 86px;
+
 
   .order-popup-close {
     position: absolute;
@@ -115,7 +114,15 @@ footer.footer {
     right: 30px;
   }
     .auth-form {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin-top: 94px;
+      margin-bottom: 86px;
+      width: 422px;
       .auth-title {
+        text-align: center;
         @include head-lora-38;
         margin-bottom: 20px;
       }
@@ -132,7 +139,10 @@ footer.footer {
 
         }
         .auth-button {
-
+          margin-top: 0;
+          .ok {
+            margin-top: 20px;
+          }
         }
       }
   }

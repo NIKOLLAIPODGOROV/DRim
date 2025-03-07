@@ -1,28 +1,28 @@
 @import "../../../../assets/styles/variables";
 @import "../../../../assets/styles/mixins";
 
-.catalog {
+.articles {
   padding-top: 80px;
   padding-bottom: 120px;
 
   .container {
 
-    .catalog-title {
+    .articles-title {
       @include head-lora-38;
       margin-bottom: 40px;
     }
 
-    .catalog-head {
+    .articles-head {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
 
 
-      .catalog-applied-filters {
+      .articles-applied-filters {
         display: flex;
         flex-wrap: wrap;
 
-        .catalog-applied-filter {
+        .articles-applied-filter {
           border: 1px solid $blue-text-color;
           border-radius: 5px;
           font-size: 16px;
@@ -42,8 +42,13 @@
         }
       }
 
+      .articles-filters {
+        width: 257px;
+        min-width: 257px;
+        margin-right: -58px;
 
-      .catalog-filter {
+
+      .articles-filter {
         width: 190px;
         min-width: 190px;
         box-sizing: border-box;
@@ -52,7 +57,7 @@
         cursor: pointer;
 
 
-        .catalog-filter-head {
+        .articles-filter-head {
           display: flex;
           align-items: center;
           padding: 12px 0 12px 23px;
@@ -64,7 +69,7 @@
           }
         }
 
-        .catalog-filter-body {
+        .articles-filter-body {
           position: absolute;
           width: 100%;
           box-sizing: border-box;
@@ -75,7 +80,7 @@
           border-radius: 0 0 5px 5px;
           color: #BEBEBE;
 
-          .catalog-filter-item {
+          .articles-filter-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 14px;
@@ -94,7 +99,7 @@
         &.open {
           width: 257px;
           min-width: 257px;
-          .catalog-filter-head {
+          .articles-filter-head {
             color: $gray-text-color;
             background: $blue-light-text-color;
             border-radius: 5px 5px 0 0;
@@ -102,25 +107,21 @@
             margin-bottom: 0;
           }
 
-          .catalog-filter-body {
+          .articles-filter-body {
             display: block;
           }
         }
       }
     }
+    }
 
-    .catalog-content {
+    .articles-content {
 
-
-      .catalog-filters {
-        margin-right: -58px;
-      }
-
-      .catalog-products {
+      .articles-products {
         display: grid;
         grid-template-columns: repeat(4, 292px);
         gap: 40px 24px
-    }
+      }
     }
 
     .pagination {

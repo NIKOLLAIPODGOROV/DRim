@@ -1,5 +1,3 @@
-import {UserInfoType} from "./user-info.type";
-
 export type CommentType = {
       id: string,
       text: string,

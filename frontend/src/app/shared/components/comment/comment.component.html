@@ -1,15 +1,17 @@
 <div class="comment">
   <div class="container">
     <div class="comment-avatar">
-      <img src="/frontend/src/assets/images/comments/icons/avatar.png" alt="avatar">
-      <div class="commenter-name">{{comment?.user}}</div>
-      <div class="commenter-date">{{comment?.date}}</div>
+      <img src="../../../../assets/images/comments/icons/avatar.png" alt="avatar">
+      <div class="comment-avata-info">
+        <div class="commenter-name">{{comment?.user?.name}}</div>
+        <div class="commenter-date">{{comment?.date  | date : 'dd.MM.yyyy HH:mm'}}</div>
+      </div>
     </div>
     <div class="comment-content">
-    <div class="comment-text">
-     {{comment?.text}}
+      <div class="comment-text">
+        {{comment?.text}}
+      </div>
+      <count-selector  (onCountChange)="updateCount($event)"></count-selector>
     </div>
-  </div>
-<!--    <count-selector></count-selector>-->
   </div>
 </div>

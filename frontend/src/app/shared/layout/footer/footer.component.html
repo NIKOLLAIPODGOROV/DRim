@@ -45,7 +45,7 @@
             +7 (499) 343-13-34
           </div>
           <div class="footer-phone-action">
-            <button class="button button-footer-phone" (click)="createRequest()" >Перезвоните мне</button>
+            <button class="button button-footer-phone" (click)="call()" >Перезвоните мне</button>
           </div>
         </div>
         <div class="footer-block footer-bottom-email">
@@ -103,7 +103,7 @@
       <div class="auth-inputs" *ngIf="isFormEmpty">
 
         <div class="auth-input">
-          <input type="email" class="input"
+          <input type="text" class="input"
                  [ngStyle]="{'border-color': requestForm.get('name')?.invalid
                   && (requestForm.get('name')?.dirty || requestForm.get('name')?.touched) ? 'red' : ''}"
                  placeholder="Ваше имя" formControlName="name">
@@ -116,9 +116,13 @@
         </div>
       </div>
       <div class="auth-button">
-        <button class="button" *ngIf="isFormEmpty" [disabled]="requestForm.invalid" (click)="call()">Заказать консультацию</button>
-        <button class="button" *ngIf="!isFormEmpty" (click)="closePopup()">Окей</button>
+        <button class="button" *ngIf="isFormEmpty" [disabled]="requestForm.invalid" (click)="createRequests()">Заказать консультацию</button>
+        <button class="button ok" *ngIf="!isFormEmpty" (click)="closePopup()">Окей</button>
       </div>
     </div>
   </div>
 </ng-template>
+
+
+
+

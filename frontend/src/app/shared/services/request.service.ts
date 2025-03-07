@@ -13,11 +13,11 @@ export class RequestService {
   constructor(private http: HttpClient) {
   }
 
-  createRequest(params: RequestsType): Observable<DefaultResponseType> {
+  createAuthRequest(params: RequestsType): Observable<DefaultResponseType> {
     return this.http.post<DefaultResponseType>(environment.api + 'requests', params, {withCredentials: true});
   }
 
-  createAuthRequest(params: RequestsType): Observable<DefaultResponseType> {
+  createRequest(params: RequestsType): Observable<DefaultResponseType> {
     return this.http.post<DefaultResponseType>(environment.api + 'requests', params);
   }
 

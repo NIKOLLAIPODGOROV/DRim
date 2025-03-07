@@ -20,28 +20,28 @@ getCategories(): Observable<CategoryType[]> {
 }
 
   getCategoriesWithFilter(): Observable<CategoryWithTypeType[]> {
-    return this.http.get<ArticleType[]>(environment.api + 'articles')
+    return this.http.get<CategoryType[]>(environment.api + 'categories')
       .pipe(
-        map((items: ArticleType[]) => {
+        map((items: CategoryType[]) => {
           const array: CategoryWithTypeType[] = [];
-          items.forEach((item: ArticleType) => {
-            const foundItem = array.find(arrayItem => arrayItem.category === item.category);
+          items.forEach((item: CategoryType) => {
+            const foundItem = array.find(arrayItem => arrayItem.url === item.url);
             if (foundItem) {
               foundItem.categories.push({
                 id: item.id,
-                name: item.category,
+                name: item.name,
                 url: item.url,
               });
             } else {
 
               array.push({
                 id: item.id,
-                category: item.category,
+                category: item.name,
                 url: item.url,
                 categories: [
                   {
                     id: item.id,
-                    name: item.category,
+                    name: item.name,
                     url: item.url,
                   }]
               });

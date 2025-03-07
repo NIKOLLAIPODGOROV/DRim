@@ -346,12 +346,6 @@
         Закажите бесплатную консультацию!
       </div>
 
-<!--      <div class="auth-title" *ngIf="isFormOrder">-->
-<!--        <div class="auth-title" *ngIf="isFormEmpty">-->
-<!--          Заявка на услугу-->
-<!--        </div>-->
-<!--      </div>-->
-
       <div class="auth-title thanks" *ngIf="!isFormEmpty">
         Спасибо за вашу заявку!
       </div>
@@ -368,7 +362,7 @@
         </div>
 
         <div class="auth-input">
-          <input type="email" class="input"
+          <input type="text" class="input"
                  [ngStyle]="{'border-color': callForm.get('name')?.invalid
                   && (callForm.get('name')?.dirty || callForm.get('name')?.touched) ? 'red' : ''}"
                  placeholder="Ваше имя" formControlName="name">

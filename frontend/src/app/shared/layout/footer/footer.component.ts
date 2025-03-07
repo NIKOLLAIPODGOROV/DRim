@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, TemplateRef, ViewChild,} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild,} from '@angular/core';
 import {CategoryType} from "../../../../types/category.type";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Router} from "@angular/router";
@@ -11,13 +11,14 @@ import {RequestsType} from "../../../../types/requests.type";
 import {RequestService} from "../../services/request.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent implements OnInit, OnDestroy {
 
   @Input() categories: CategoryType[] = [];
   @Input() type!: string;
@@ -39,7 +40,10 @@ export class FooterComponent implements OnInit {
               private _snackBar: MatSnackBar,
               private dialog: MatDialog,
               private fb: FormBuilder
-             ) { }
+  ) {
+  }
+
+  private subscription: Subscription | null = null;
 
   ngOnInit(): void {
     if (this.authService.getIsLoggedIn()) {
@@ -55,48 +59,44 @@ export class FooterComponent implements OnInit {
             name: userInfo.name ? userInfo.name : '',
           };
 
-          // this.requestForm.setValue(paramsToUpdate);
-          // if (userInfo.deliveryType) {
-          //   this.requestType = userInfo.deliveryType;
-          // }
         });
     }
-
   }
 
-  createRequest() {
+  createRequests() {
     if (this.requestForm.valid && this.requestForm.value.name
       && this.requestForm.value.phone) {
 
       const paramsObject: RequestsType = {
         name: this.requestForm.value.name,
         phone: this.requestForm.value.phone,
-        type: 'consulatation',
+        type: 'consultation',
       };
 
       this.requestService.createRequest(paramsObject)
         .subscribe({
-          next: (data:DefaultResponseType) => {
+          next: (data: DefaultResponseType) => {
             if ((data as DefaultResponseType).error !== undefined) {
               throw new Error(((data as DefaultResponseType).message));
             }
             this.dialogRef = this.dialog.open(this.popup);
-            this.dialogRef.backdropClick()
+           this.dialogRef.backdropClick()
               .subscribe(() => {
                 this.router.navigate(['/']);
               });
+            this.isFormEmpty = true;
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.error.message) {
               this._snackBar.open(errorResponse.error.message);
             } else {
               this._snackBar.open('Ошибка заказа');
-              this.isFormEmpty = false;
             }
           }
         });
     } else {
-      this.requestForm.markAllAsTouched();
+      this.isFormEmpty = false;
+       this.requestForm.markAllAsTouched();
       this._snackBar.open('Заполните необходимые поля');
     }
   }
@@ -104,18 +104,20 @@ export class FooterComponent implements OnInit {
   closePopup() {
     this.dialogRef?.close();
     this.router.navigate(['/']);
-    this.isFormEmpty = false;
   }
 
   call() {
-this.createRequest()
+    // this.createRequests()
+    this.isFormEmpty = true;
     this.dialogRef = this.dialog.open(this.popup);
-    this.dialogRef.backdropClick()
+    this.subscription = this.dialogRef.backdropClick()
       .subscribe(() => {
         this.router.navigate(['/']);
       });
+  }
 
-    this.isFormEmpty = true;
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
   }
 
 }

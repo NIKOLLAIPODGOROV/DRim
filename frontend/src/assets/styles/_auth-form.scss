@@ -11,6 +11,13 @@
     margin-bottom: 40px;
   }
 
+  .popup-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: $gray-light-text-color;
+    margin-bottom: 20px;
+  }
+
   .auth-inputs {
     margin-bottom: 5px;
 
@@ -21,8 +28,9 @@
         width: 422px;
         box-sizing: border-box;
         padding: 17px 0 17px 20px;
+
         input::placeholder {
-         color: #A8ABA7;
+          color: #A8ABA7;
           font-weight: 400;
           font-size: 14px;
 
@@ -62,12 +70,19 @@
       font-weight: 400;
       font-size: 16px;
     }
+    .ok {
+      width: 73px;
+      padding: 10px 20px;
+      font-size: 12px;
+      margin-top: 20px;
+    }
   }
 
   .auth-link {
     margin-top: 10px;
     font-size: 14px;
     color: #1E1A2B;
+
     a {
       text-decoration: none;
       margin-left: 7px;

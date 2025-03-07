@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
 import {environment} from "../../../../environments/environment";
 import {ArticleService} from "../../../shared/services/article.service";
@@ -12,13 +12,14 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {RequestsType} from "../../../../types/requests.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'article',
   templateUrl: './article.component.html',
   styleUrls: ['./article.component.scss']
 })
-export class ArticleComponent implements OnInit {
+export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
@@ -38,6 +39,7 @@ export class ArticleComponent implements OnInit {
     text: ['', Validators.required],
 
   })
+
   constructor(private articleService: ArticleService,
               private activatedRoute: ActivatedRoute,
               private authService: AuthService,
@@ -47,8 +49,10 @@ export class ArticleComponent implements OnInit {
               private _snackBar: MatSnackBar,) {
   }
 
+  private subscription: Subscription | null = null;
+
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
+    this.subscription = this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
         .subscribe(data => {
           this.article = data;
@@ -62,59 +66,62 @@ export class ArticleComponent implements OnInit {
               }
             });
 
+          if (this.offset && this.offset > 0) {
+            this.commentService.getComments(3, this.article.id)
+              .subscribe(data => {
+                this.allCounts = [];
+                for (let i = 1; i <= data.allCounts; i++) {
+                  this.allCounts.push(i);
+                }
+                if (!this.comments) {
+                  this.noComments = true;
+                }
+                return this.comments = data.comments;
 
-      if (this.offset && this.offset > 0) {
-        this.commentService.getComments(3, this.article.id)
-          .subscribe(data => {
-            this.allCounts = [];
-            for (let i = 1; i <= data.allCounts; i++) {
-              this.allCounts.push(i);
-            }
-            if (!this.comments) {
-              this.noComments = true;
-            }
-            console.log(this.comments);
-            return this.comments = data.comments;
+              });
+          }
+          if (data.comments) {
+            this.comments = data.comments;
+          }
+        });
 
-          });
-      }
     });
-
-    });
-
-    // });
 
   }
 
   addComment() {
     if (this.authService.getIsLoggedIn()) {
-    if (this.textForm.valid && this.textForm.value.text) {
-      const paramsObject = {
-        article: this.article.id,
-        text: this.textForm.value.text,
-      };
-
-      this.commentService.addComment(this.textForm.value.text,this.article.id)
-        .subscribe({
-          next: (data:DefaultResponseType) => {
-            if ((data as DefaultResponseType).error !== undefined) {
-              throw new Error(((data as DefaultResponseType).message));
-            }
-            this._snackBar.open('Комментарий добавлен');
-          },
-          error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.error.message) {
-              this._snackBar.open(errorResponse.error.message);
-            } else {
-              this._snackBar.open('Ошибка добавления комментария');
-            }
+      if (this.textForm.valid && this.textForm.value.text) {
+        const paramsObject = {
+          article: this.article.id,
+          text: this.textForm.value.text,
+        };
+        this.isLoggedIn = true;
+        this.commentService.addComment(this.textForm.value.text, this.article.id)
+          .subscribe({
+            next: (data: DefaultResponseType) => {
+              if ((data as DefaultResponseType).error !== undefined) {
+                throw new Error(((data as DefaultResponseType).message));
+              }
+              this._snackBar.open('Комментарий добавлен');
+            },
+            error: (errorResponse: HttpErrorResponse) => {
+              if (errorResponse.error && errorResponse.error.message) {
+                this._snackBar.open(errorResponse.error.message);
+              } else {
+                this._snackBar.open('Ошибка добавления комментария');
+              }
             }
           });
-    } else {
-      this.textForm.markAllAsTouched();
-      this._snackBar.open('Заполните необходимые поля');
+      } else {
+        this.textForm.markAllAsTouched();
+        this._snackBar.open('Заполните необходимые поля');
+      }
     }
   }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
   }
 
 }

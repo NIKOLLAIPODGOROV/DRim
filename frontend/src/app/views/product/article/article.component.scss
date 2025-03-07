@@ -46,7 +46,7 @@
 
     .main-information {
       display: flex;
-      align-items: self-start;
+      align-items: flex-start;
       justify-content: space-between;
 
       .main-content {
@@ -59,7 +59,6 @@
         }
 
         .block-articles {
-
           max-width: 818px;
 
           .title {
@@ -74,6 +73,9 @@
             font-size: 14px;
             margin-bottom: 40px;
             line-height: 130%;
+            &:last-child {
+              margin-bottom: 0;
+            }
           }
 
           .second-article-text-over ol {
@@ -87,22 +89,10 @@
         }
       }
 
-      .extra-info-item {
-
-        .extra-info-item-title {
-          @include head-lora-26;
-          margin-bottom: 20px;
-        }
-
-        padding-top: 60px;
-        display: grid;
-        grid-template-columns: repeat(1, 292px);
-        gap: 60px;
-      }
-    }
 
     .final-block {
       max-width: 818px;
+      margin-top: 40px;
 
       .fourth-article-title {
         @include head-montserrat-20;
@@ -179,7 +169,6 @@
         }
 
         .button {
-          margin-top: 20px;
           width: 422px;
           font-size: 16px;
           font-weight: 400;
@@ -188,8 +177,9 @@
 
       .comments-items {
 
-        .comments-item {
-
+        margin-top: 60px;
+        .comment {
+margin-top: 40px;
         }
       }
     }
@@ -223,4 +213,21 @@
     }
 
   }
+    .extra-info-item {
+
+      .extra-info-item-title {
+        @include head-lora-26;
+        margin-bottom: 20px;
+      }
+
+      padding-top: 60px;
+      display: grid;
+      grid-template-columns: repeat(1, 292px);
+      gap: 60px;
+      :last-child {
+        gap: 0;
+      }
+    }
+  }
 }
+

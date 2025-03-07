@@ -1,15 +1,16 @@
-<div class="catalog">
+<div class="articles">
   <div class="container">
 
-    <div class="catalog-title">
+    <div class="articles-title">
       Блог
     </div>
 
-    <div class="catalog-head">
-      <div class="catalog-applied-filters">
+    <div class="articles-head">
 
-        <div class="catalog-applied-filter" *ngFor="let appliedFilter of appliedFilters">
-             <span>{{appliedFilter.name}}</span>
+      <div class="articles-applied-filters">
+
+        <div class="articles-applied-filter" *ngFor="let appliedFilter of appliedFilters">
+          <span>{{appliedFilter.name}}</span>
           <a (click)="removeAppliedFilter(appliedFilter)">
             <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clip-path="url(#clip0_15987_586)">
@@ -24,48 +25,54 @@
             </svg>
           </a>
         </div>
-
       </div>
+      <div class="articles-filters">
 
-      <div class="catalog-filter open" [class.open]="open" (click)="toggle()">
-        <div class="catalog-filter-head">
-          <span>Фильтр</span>
-          <svg *ngIf="!open" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M10 14.5C9.41668 14.5 8.83335 14.275 8.39168 13.8334L2.95835 8.40003C2.71668 8.15837 2.71668 7.75837 2.95835 7.5167C3.20002 7.27503 3.60002 7.27503 3.84168 7.5167L9.27502 12.95C9.67502 13.35 10.325 13.35 10.725 12.95L16.1583 7.5167C16.4 7.27503 16.8 7.27503 17.0417 7.5167C17.2833 7.75837 17.2833 8.15837 17.0417 8.40003L11.6083 13.8334C11.1667 14.275 10.5833 14.5 10 14.5Z"
-              fill="#071739"/>
-          </svg>
-
-          <svg *ngIf="open" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M9.99998 5.99997C10.5833 5.99997 11.1667 6.22497 11.6083 6.66663L17.0417 12.1C17.2833 12.3416 17.2833 12.7416 17.0417 12.9833C16.8 13.225 16.4 13.225 16.1583 12.9833L10.725 7.54997C10.325 7.14997 9.67498 7.14997 9.27498 7.54997L3.84165 12.9833C3.59999 13.225 3.19998 13.225 2.95832 12.9833C2.71665 12.7416 2.71665 12.3416 2.95832 12.1L8.39165 6.66663C8.83332 6.22497 9.41665 5.99997 9.99998 5.99997Z"
-              fill="#071739"/>
-          </svg>
-        </div>
-        <div class="catalog-filter-body">
-          <div class="catalog-filter-item"
-               *ngFor="let category of categories">{{category.name}}
-
-            <svg *ngIf="!isActive" width="12" height="11" viewBox="0 0 12 11" fill="none"
+        <div class="articles-filter open" [class.open]="open" (click)="toggle()">
+          <div class="articles-filter-head">
+            <span>Фильтр</span>
+            <svg *ngIf="!open" width="20" height="21" viewBox="0 0 20 21" fill="none"
                  xmlns="http://www.w3.org/2000/svg">
-              <path d="M11.12 4.904H6.656V0.511999H5.144V4.904H0.68V6.32H5.144V10.688H6.656V6.32H11.12V4.904Z"
-                    fill="#BEBEBE"/>
+              <path
+                d="M10 14.5C9.41668 14.5 8.83335 14.275 8.39168 13.8334L2.95835 8.40003C2.71668 8.15837 2.71668 7.75837 2.95835 7.5167C3.20002 7.27503 3.60002 7.27503 3.84168 7.5167L9.27502 12.95C9.67502 13.35 10.325 13.35 10.725 12.95L16.1583 7.5167C16.4 7.27503 16.8 7.27503 17.0417 7.5167C17.2833 7.75837 17.2833 8.15837 17.0417 8.40003L11.6083 13.8334C11.1667 14.275 10.5833 14.5 10 14.5Z"
+                fill="#071739"/>
             </svg>
-            <svg *ngIf="isActive" width="7" height="3" viewBox="0 0 7 3" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0.44 2.24H6.728V0.752H0.44V2.24Z" fill="#071739"/>
+
+            <svg *ngIf="open" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M9.99998 5.99997C10.5833 5.99997 11.1667 6.22497 11.6083 6.66663L17.0417 12.1C17.2833 12.3416 17.2833 12.7416 17.0417 12.9833C16.8 13.225 16.4 13.225 16.1583 12.9833L10.725 7.54997C10.325 7.14997 9.67498 7.14997 9.27498 7.54997L3.84165 12.9833C3.59999 13.225 3.19998 13.225 2.95832 12.9833C2.71665 12.7416 2.71665 12.3416 2.95832 12.1L8.39165 6.66663C8.83332 6.22497 9.41665 5.99997 9.99998 5.99997Z"
+                fill="#071739"/>
             </svg>
+          </div>
+          <div class="articles-filter-body">
+            <div class="articles-filter-item" *ngFor="let category of categories">{{category.name}}
+              <input type="checkbox" #input
+                     [checked]="activeParams.categories.includes(category.url)"
+                     (change)="updateFilterParam(category.url, input.checked)">
+<!--              <svg *ngIf="!isActive" width="12" height="11" viewBox="0 0 12 11" fill="none"-->
+<!--                   xmlns="http://www.w3.org/2000/svg">-->
+<!--                <path d="M11.12 4.904H6.656V0.511999H5.144V4.904H0.68V6.32H5.144V10.688H6.656V6.32H11.12V4.904Z"-->
+<!--                      fill="#BEBEBE"/>-->
+<!--              </svg>-->
+<!--              <svg *ngIf="isActive" width="7" height="3" viewBox="0 0 7 3" fill="none"-->
+<!--                   xmlns="http://www.w3.org/2000/svg">-->
+<!--                <path d="M0.44 2.24H6.728V0.752H0.44V2.24Z" fill="#071739"/>-->
+<!--              </svg>-->
+            </div>
           </div>
         </div>
       </div>
-
-      <!--<category-filter [categoryWithType]="categoryWithType"-->
-      <!--                 *ngFor="let categoryWithType of categoriesWithType"></category-filter>-->
     </div>
 
-    <div class="catalog-content">
-      <div class="catalog-products">
 
-          <product-card [article]="article" *ngFor="let article of articles" ></product-card>
+    <!--    <category-filter [categoryWithType]="categoryWithType"-->
+    <!--                     *ngFor="let categoryWithType of categoriesWithType"></category-filter>-->
+
+    <div class="articles-content">
+      <div class="articles-products">
+
+        <product-card [article]="article" *ngFor="let article of articles"></product-card>
 
 
       </div>

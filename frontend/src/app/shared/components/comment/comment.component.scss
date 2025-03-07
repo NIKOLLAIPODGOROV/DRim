@@ -2,14 +2,18 @@
 @import "../../../../assets/styles/mixins";
 
 .comment {
+  margin-top: 40px;
   .container {
-    display: flex;
-    text-align: start;
 
     .comment-avatar {
       display: flex;
+      align-items: center;
 
       img {
+        background-color: $blue-light-text-color;
+        border-radius: 50%;
+        border: 2px solid #709FDC;
+        box-sizing: border-box;
         width: 60px;
         height: 60px;
         margin-right: 26px;
@@ -22,6 +26,7 @@
       }
 
       .commenter-date {
+        font-weight: 600;
         margin-top: 10px;
         color: #BEBEBE;
 
@@ -33,6 +38,7 @@
 
       .comment-text {
         font-size: 14px;
+        margin-bottom: 39px;
       }
     }
   }
