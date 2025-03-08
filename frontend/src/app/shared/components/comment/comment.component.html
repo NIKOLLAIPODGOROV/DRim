@@ -11,7 +11,7 @@
       <div class="comment-text">
         {{comment?.text}}
       </div>
-      <count-selector  (onCountChange)="updateCount($event)"></count-selector>
+      <count-selector [action]="action" (onCountChange)="updateCount($event)"></count-selector>
     </div>
   </div>
 </div>

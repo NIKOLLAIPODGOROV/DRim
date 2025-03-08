@@ -55,10 +55,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
-        .subscribe(data => {
+        .subscribe(data=> {
           this.article = data;
 
-          this.articleService.getRelatedArticles(this.article.url)
+           this.articleService.getRelatedArticles(this.article.url)
             .subscribe(data => {
               this.relatedArticles = data as ArticleType[];
 
@@ -77,7 +77,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 if (!this.comments) {
                   this.noComments = true;
                 }
-                return this.comments = data.comments;
+                return this.comments = data.comments as CommentType[];
 
               });
           }
@@ -92,13 +92,13 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   addComment() {
     if (this.authService.getIsLoggedIn()) {
-      if (this.textForm.valid && this.textForm.value.text) {
+      if (this.article && this.textForm.valid && this.textForm.value.text) {
         const paramsObject = {
           article: this.article.id,
           text: this.textForm.value.text,
         };
         this.isLoggedIn = true;
-        this.commentService.addComment(this.textForm.value.text, this.article.id)
+         this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
               if ((data as DefaultResponseType).error !== undefined) {

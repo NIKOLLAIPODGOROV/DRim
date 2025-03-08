@@ -13,19 +13,22 @@ import {ActivatedRoute} from "@angular/router";
   templateUrl: './count-selector.component.html',
   styleUrls: ['./count-selector.component.scss']
 })
-export class CountSelectorComponent implements OnInit  {
+export class CountSelectorComponent implements OnInit {
 
 
-  likesCount!: number;
-  action: string = '';
-  @Input()countDis: number = 0;
-  @Input()countLk: number = 0;
+  @Input() action: string = '';
+  @Input() dislikesCount: number = 0;
+  @Input() likesCount: number = 0;
   @Input() countLike: string = 'like';
   @Input() countDislike: string = 'dislike';
   article!: ArticleType;
+
   @Input() comments: CommentType[] = [];
   @Input() comment: CommentType | null = null;
-
+  @Input() offset: number | null = null;
+  @Input() allCounts: number[] = [];
+  noComments: boolean = false;
+  isLoggedIn: boolean = false;
   @Output() onCountChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private articleService: ArticleService,
@@ -46,24 +49,32 @@ export class CountSelectorComponent implements OnInit  {
 
   }
 
-   countChangeLike() {
-     this.onCountChange.emit(this.countLk);
+  countChangeLike() {
+    this.onCountChange.emit(this.likesCount);
   }
 
   countChangeDisLike() {
-    this.onCountChange.emit(this.countDis);
+    this.onCountChange.emit(this.dislikesCount);
   }
 
   dislikeCount() {
-      this.countDis++;
+    this.dislikesCount++;
     this.action = 'dislike';
-      this.countChangeDisLike();
-
-    // this.commentService.applyAction(this.dislike)
+    this.countChangeDisLike();
+    if (this.comment) {
+      this.isLoggedIn = true;
+      this.commentService.applyAction(this.comment.id, this.action)
+        .subscribe((data: DefaultResponseType) => {
+          if ((data as DefaultResponseType).error !== undefined) {
+            throw new Error((data as DefaultResponseType).message);
+          }
+          this.countLike = this.action;
+        });
+    }
   }
 
   likeCount() {
-    this.countLk++;
+    this.likesCount++;
     this.action = 'like';
     this.countChangeLike()
     if (this.comment) {

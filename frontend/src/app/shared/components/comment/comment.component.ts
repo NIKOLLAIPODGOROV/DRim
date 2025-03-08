@@ -15,18 +15,17 @@ import {DefaultResponseType} from "../../../../types/default-response.type";
 export class CommentComponent implements OnInit {
 
   action: string = '';
-  idCom: string | null = null;
 
   @Input() allCounts: number[] = [];
-  @Input() countDis: number = 0;
-  @Input() countLk: number = 0;
+  @Input() likesCount: number = 0;
+  @Input() dislikesCount: number = 0;
   @Input() countLike: string = '';
   @Input() countDislike: string = '';
   article!: ArticleType;
   @Input() comments: CommentType[] = [];
   @Input() comment: CommentType | null = null;
   @Input() offset: number | null = null;
-
+  isLoggedIn: boolean = false;
   noComments: boolean = false;
 
   constructor(private authService: AuthService,
@@ -47,32 +46,25 @@ export class CommentComponent implements OnInit {
 
   }
 
-
-  likeCount() {
-    if (this.comment) {
-      this.commentService.applyAction(this.comment.id, this.action)
-        .subscribe((data: DefaultResponseType) => {
-          if ((data as DefaultResponseType).error !== undefined) {
-            throw new Error((data as DefaultResponseType).message);
-          }
-          this.countLike = this.action;
-        });
-    }
-  }
-
   updateCount(value: number) {
-    this.countLk = value;
-    if (this.countLike) {
-      this.action = 'like';
-      if (this.comment) {
-        this.commentService.applyAction(this.comment.id, this.action)
-          .subscribe((data: DefaultResponseType) => {
-            if ((data as DefaultResponseType).error !== undefined) {
-              throw new Error((data as DefaultResponseType).message);
-            }
-
-            this.countLike = this.action;
-          });
+    if (this.authService.getIsLoggedIn()) {
+      this.likesCount = value;
+      this.dislikesCount = value;
+      if (this.likesCount) {
+        this.action = 'like';
+        if (this.dislikesCount) {
+          this.action = 'dislike';
+          if (this.comment) {
+            this.isLoggedIn = true;
+            this.commentService.applyAction(this.comment.id, this.action)
+              .subscribe((data: DefaultResponseType) => {
+                if ((data as DefaultResponseType).error !== undefined) {
+                  throw new Error((data as DefaultResponseType).message);
+                }
+                return this.action;
+              });
+          }
+        }
       }
     }
   }
