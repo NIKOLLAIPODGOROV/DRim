@@ -29,6 +29,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input() offset: number | null = null;
   @Input() allCounts: number[] = [];
   @Input() text!: string;
+  action: string = '';
 
   serverStaticPath = environment.serverStaticPath;
 
@@ -119,6 +120,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
       }
     }
   }
+
 
   ngOnDestroy() {
     this.subscription?.unsubscribe()

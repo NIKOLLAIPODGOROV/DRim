@@ -15,11 +15,11 @@ import {DefaultResponseType} from "../../../../types/default-response.type";
 export class CommentComponent implements OnInit {
 
   action: string = '';
-idCom: string | null = null;
+  idCom: string | null = null;
 
   @Input() allCounts: number[] = [];
-  @Input()countDis: number = 0;
-  @Input()countLk: number = 0;
+  @Input() countDis: number = 0;
+  @Input() countLk: number = 0;
   @Input() countLike: string = '';
   @Input() countDislike: string = '';
   article!: ArticleType;
@@ -28,6 +28,7 @@ idCom: string | null = null;
   @Input() offset: number | null = null;
 
   noComments: boolean = false;
+
   constructor(private authService: AuthService,
               private commentService: CommentService,
               private articleService: ArticleService,
@@ -42,52 +43,37 @@ idCom: string | null = null;
           this.article.comments = data.comments as CommentType[];
         });
 
-    if (this.offset && this.offset > 0) {
-      if (this.comment?.id) {
-        this.commentService.getComments(3, this.comment.id)
-          .subscribe(data => {
-            this.allCounts = [];
-            for (let i = 1; i <= data.allCounts; i++) {
-              this.allCounts.push(i);
-            }
-            if (!this.comments) {
-              this.noComments = true;
-            }
-            console.log(this.comments);
-            return this.comments = data.comments;
-
-          });
-      }
-      }
-        });
+    });
 
   }
 
 
-  addLike() {
-  //   this.commentService.applyAction(this.comment.id, this.action)
-  //     .subscribe((data: DefaultResponseType) => {
-  //       if ((data as DefaultResponseType).error !== undefined) {
-  //         throw new Error((data as DefaultResponseType).message);
-  //       }
-  //       this.countLike = this.action;
-  //     });
-   }
+  likeCount() {
+    if (this.comment) {
+      this.commentService.applyAction(this.comment.id, this.action)
+        .subscribe((data: DefaultResponseType) => {
+          if ((data as DefaultResponseType).error !== undefined) {
+            throw new Error((data as DefaultResponseType).message);
+          }
+          this.countLike = this.action;
+        });
+    }
+  }
 
   updateCount(value: number) {
     this.countLk = value;
     if (this.countLike) {
-       this.action = 'like';
-      // this.commentService.applyAction(this.comments.id, this.action)
-      //   .subscribe((data: DefaultResponseType) => {
-      //     if ((data as DefaultResponseType).error !== undefined) {
-      //       throw new Error((data as DefaultResponseType).message);
-      //     }
-      //
-      //      this.countInCart = this.count;
-      //   });
+      this.action = 'like';
+      if (this.comment) {
+        this.commentService.applyAction(this.comment.id, this.action)
+          .subscribe((data: DefaultResponseType) => {
+            if ((data as DefaultResponseType).error !== undefined) {
+              throw new Error((data as DefaultResponseType).message);
+            }
+
+            this.countLike = this.action;
+          });
+      }
     }
   }
-
-
 }
