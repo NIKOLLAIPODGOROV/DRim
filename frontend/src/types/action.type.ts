@@ -1,4 +1,4 @@
 export type ActionType = {
-  comment?: string,
+  comment: string,
   action: string,
 }

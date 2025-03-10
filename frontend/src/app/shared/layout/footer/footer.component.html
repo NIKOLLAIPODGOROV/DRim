@@ -91,16 +91,16 @@
       </svg>
     </div>
     <div class="auth-form" [formGroup]="requestForm">
-      <div class="auth-title" *ngIf="isFormEmpty">
+      <div class="auth-title" *ngIf="!isFormEmpty">
         Закажите бесплатную консультацию!
       </div>
 
-      <div class="auth-title" *ngIf="!isFormEmpty">
+      <div class="auth-title" *ngIf="isFormEmpty">
         Спасибо за вашу заявку!
       </div>
-      <div class="popup-text" *ngIf="!isFormEmpty">Мы свяжемся с вами при первой же возможности.</div>
+      <div class="popup-text" *ngIf="isFormEmpty">Мы свяжемся с вами при первой же возможности.</div>
 
-      <div class="auth-inputs" *ngIf="isFormEmpty">
+      <div class="auth-inputs" *ngIf="!isFormEmpty">
 
         <div class="auth-input">
           <input type="text" class="input"
@@ -116,8 +116,8 @@
         </div>
       </div>
       <div class="auth-button">
-        <button class="button" *ngIf="isFormEmpty" [disabled]="requestForm.invalid" (click)="createRequests()">Заказать консультацию</button>
-        <button class="button ok" *ngIf="!isFormEmpty" (click)="closePopup()">Окей</button>
+        <button class="button" *ngIf="!isFormEmpty" [disabled]="requestForm.invalid" (click)="createRequests()">Заказать консультацию</button>
+        <button class="button ok" *ngIf="isFormEmpty" (click)="closePopup()">Окей</button>
       </div>
     </div>
   </div>

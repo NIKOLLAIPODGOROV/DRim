@@ -84,7 +84,7 @@ export class FooterComponent implements OnInit, OnDestroy {
               .subscribe(() => {
                 this.router.navigate(['/']);
               });
-            this.isFormEmpty = true;
+
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.error.message) {
@@ -107,8 +107,8 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   call() {
+    this.isFormEmpty = false;
     // this.createRequests()
-    this.isFormEmpty = true;
     this.dialogRef = this.dialog.open(this.popup);
     this.subscription = this.dialogRef.backdropClick()
       .subscribe(() => {

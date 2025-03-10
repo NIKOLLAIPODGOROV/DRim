@@ -1,17 +1,15 @@
 <section class="main">
   <div class="container">
         <div class="main-carousel">
-          <owl-carousel-o [options]="customOptions" #owlCarRev>
-            <ng-template carouselSlide>
-              <div class="main-item">
-                <div class="main-item-head">
-                  <div class="main-item-image" style="background-image: url('/assets/images/page/main-banners/Banner1.png')"></div>
-                </div>
-              </div>
+          <owl-carousel-o [options]="customOptions" #owlCarRev1>
+            <ng-template carouselSlide *ngFor="let main of mains">
+
+                  <div class="main-item-image" style="background-image: url('/assets/images/page/main-banners/Banner2.png')"></div>
+
             </ng-template>
           </owl-carousel-o>
           <div class="main-arrows">
-            <a class="move-backward" (click)="owlCarRev.prev()">
+            <a class="move-backward" (click)="owlCarRev1.prev()">
               <svg width="15" height="28" viewBox="0 0 15 28" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <rect x="15" width="28" height="15" transform="rotate(90 15 0)" fill="url(#pattern0_17965_355)"/>
                 <defs>
@@ -22,7 +20,7 @@
                 </defs>
               </svg>
             </a>
-            <a class="move-forward" (click)="owlCarRev.next()">
+            <a class="move-forward" (click)="owlCarRev1.next()">
               <svg width="15" height="28" viewBox="0 0 15 28" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <rect y="28" width="28" height="15" transform="rotate(-90 0 28)" fill="url(#pattern0_17965_350)"/>
                 <defs>
@@ -375,8 +373,7 @@
         </div>
       </div>
       <div class="auth-button">
-        <button class="button" *ngIf="isFormEmpty" [disabled]="callForm.invalid" (click)="call()">Заказать консультацию</button>
-<!--        <button class="button" *ngIf="isFormEmpty" [disabled]="callForm.invalid" (click)="call()">Оставить заявку</button>-->
+        <button class="button" *ngIf="isFormEmpty" [disabled]="callForm.invalid" (click)="createAuthRequest()">Заказать консультацию</button>
         <button class="button ok" *ngIf="!isFormEmpty" (click)="closePopup()">Окей</button>
       </div>
     </div>

@@ -7,7 +7,6 @@ import {AuthService} from "../../core/auth/auth.service";
 import {FormBuilder, Validators} from "@angular/forms";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {CommentType} from "../../../types/comment.type";
 import {RequestService} from "../../shared/services/request.service";
 import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
@@ -19,14 +18,15 @@ import {Subscription} from "rxjs";
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
+
 export class MainComponent implements OnInit, OnDestroy {
 
   isFormEmpty: boolean = false;
   @Input() popularArticles: ArticleType[] = [];
   @Input() article!: ArticleType;
   @Input() type!: string;
-
   articles: ArticleType[] = [];
+
   customOptions: OwlOptions = {
     loop: true,
     mouseDrag: false,
@@ -41,16 +41,13 @@ export class MainComponent implements OnInit, OnDestroy {
         items: 1
       },
       400: {
-        items: 2
+        items: 1
       },
       740: {
-        items: 3
+        items: 1
       },
-      940: {
-        items: 4
-      }
     },
-    nav: false
+    nav: true
   };
 
   customOptionsReviews: OwlOptions = {
@@ -75,6 +72,19 @@ export class MainComponent implements OnInit, OnDestroy {
     },
     nav: false
   };
+
+
+  mains = [
+{
+  image: 'Banner1.png'
+},
+    {
+      image: 'Banner2.png'
+    },
+    {
+      image: 'Banner3.png'
+    }
+  ]
 
   reviews = [
     {
@@ -132,6 +142,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription | null = null;
 
+
   ngOnInit(): void {
    this.subscription = this.activatedRoute.params.subscribe(params => {
       this.articleService.getPopularArticles()
@@ -142,6 +153,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   createAuthRequest() {
+
     if (this.callForm.valid && this.callForm.value.name
       && this.callForm.value.phone && this.callForm.value.service) {
 
@@ -187,7 +199,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   call() {
     this.authService.getIsLoggedIn()
-    this.createAuthRequest()
+    // this.createAuthRequest()
     this.dialogRef = this.dialog.open(this.popup);
     this.dialogRef.backdropClick()
       .subscribe(() => {
@@ -200,6 +212,4 @@ export class MainComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscription?.unsubscribe()
   }
-
-
 }

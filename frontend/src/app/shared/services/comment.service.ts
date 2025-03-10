@@ -6,6 +6,7 @@ import {environment} from "../../../environments/environment";
 import {CommentType} from "../../../types/comment.type";
 import {ArticleType} from "../../../types/article.type";
 import {CommentActionType} from "../../../types/comment-action.type";
+import {ActionType} from "../../../types/action.type";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export class CommentService {
     return this.http.get<DefaultResponseType | CommentActionType>(environment.api + 'comments/' + id + '/actions',);
   }
 
-  getArticleCommentActions(articled: string,): Observable<DefaultResponseType | CommentActionType[]> {
-    return this.http.get<DefaultResponseType | CommentActionType[]>(environment.api + 'comments/article-comment-actions' + articled,);
+  getArticleCommentActions(articleId: string,): Observable<DefaultResponseType> {
+    return this.http.get<DefaultResponseType>(environment.api + 'comments/article-comment-actions?articleId=' + articleId,);
   }
 }

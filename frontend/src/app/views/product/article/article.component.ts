@@ -13,6 +13,9 @@ import {RequestsType} from "../../../../types/requests.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
+import {CommentComponent} from "../../../shared/components/comment/comment.component";
+import {CommentActionType} from "../../../../types/comment-action.type";
+import {ActionType} from "../../../../types/action.type";
 
 @Component({
   selector: 'article',
@@ -32,7 +35,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
   action: string = '';
 
   serverStaticPath = environment.serverStaticPath;
-
+  likesCount: number | null = null;
+  dislikesCount: number | null = null;
   isLoggedIn: boolean = false;
   noComments: boolean = false;
 
@@ -53,12 +57,23 @@ export class ArticleComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.subscription = this.activatedRoute.params.subscribe(params => {
-      this.articleService.getArticle(params['url'])
-        .subscribe(data=> {
+    this.activatedRoute.params.subscribe(params => {
+      this.subscription = this.articleService.getArticle(params['url'])
+        .subscribe(data => {
           this.article = data;
 
-           this.articleService.getRelatedArticles(this.article.url)
+          this.commentService.getArticleCommentActions(this.article.id)
+            .subscribe(data  => {
+
+              if ((data as DefaultResponseType).error !== undefined) {
+                throw new Error(((data as DefaultResponseType).message));
+              }
+
+              return  data ;
+
+            })
+
+          this.articleService.getRelatedArticles(this.article.url)
             .subscribe(data => {
               this.relatedArticles = data as ArticleType[];
 
@@ -77,28 +92,28 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 if (!this.comments) {
                   this.noComments = true;
                 }
-                return this.comments = data.comments as CommentType[];
+               // return this.comments = data.comments as CommentType[];
 
               });
           }
           if (data.comments) {
             this.comments = data.comments;
           }
-        });
 
+        });
     });
 
   }
 
   addComment() {
-    if (this.authService.getIsLoggedIn()) {
+   this.authService.getIsLoggedIn()
       if (this.article && this.textForm.valid && this.textForm.value.text) {
         const paramsObject = {
           article: this.article.id,
           text: this.textForm.value.text,
         };
         this.isLoggedIn = true;
-         this.commentService.addComment(this.textForm.value.text, this.article.id)
+        this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
               if ((data as DefaultResponseType).error !== undefined) {
@@ -118,7 +133,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this.textForm.markAllAsTouched();
         this._snackBar.open('Заполните необходимые поля');
       }
-    }
+   // }
+
   }
 
 
