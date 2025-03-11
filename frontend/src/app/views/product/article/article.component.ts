@@ -63,12 +63,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
           this.article = data;
 
           this.commentService.getArticleCommentActions(this.article.id)
-            .subscribe(data  => {
-
+            .subscribe((data: DefaultResponseType | {comment: string,action: string})  => {
               if ((data as DefaultResponseType).error !== undefined) {
                 throw new Error(((data as DefaultResponseType).message));
               }
-
               return  data ;
 
             })
@@ -106,13 +104,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   addComment() {
-   this.authService.getIsLoggedIn()
+   if (!this.isLoggedIn) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
         const paramsObject = {
           article: this.article.id,
           text: this.textForm.value.text,
         };
-        this.isLoggedIn = true;
         this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
@@ -133,7 +130,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this.textForm.markAllAsTouched();
         this._snackBar.open('Заполните необходимые поля');
       }
-   // }
+    }
 
   }
 

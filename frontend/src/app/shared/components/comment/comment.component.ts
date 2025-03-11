@@ -6,6 +6,7 @@ import {CommentService} from "../../services/comment.service";
 import {ActivatedRoute} from "@angular/router";
 import {ArticleService} from "../../services/article.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
+import {EActions} from "../../../constants/enums";
 
 @Component({
   selector: 'comment',
@@ -46,16 +47,11 @@ export class CommentComponent implements OnInit {
 
   }
 
-  updateCount(value: number) {
+  updateCount(value: number, action: string) {
     if (this.authService.getIsLoggedIn()) {
       this.likesCount = value;
-      this.dislikesCount = value;
-      if (this.likesCount) {
-        this.action = 'like';
-        if (this.dislikesCount) {
-          this.action = 'dislike';
-          if (this.comment) {
-            this.isLoggedIn = true;
+      this.action = action;
+      if (this.likesCount && this.comment) {
             this.commentService.applyAction(this.comment.id, this.action)
               .subscribe((data: DefaultResponseType) => {
                 if ((data as DefaultResponseType).error !== undefined) {
@@ -64,8 +60,8 @@ export class CommentComponent implements OnInit {
                 return this.action;
               });
           }
-        }
       }
     }
-  }
+
+  protected readonly EActions = EActions;
 }

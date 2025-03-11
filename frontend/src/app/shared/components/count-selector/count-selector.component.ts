@@ -29,7 +29,8 @@ export class CountSelectorComponent implements OnInit {
   @Input() allCounts: number[] = [];
   noComments: boolean = false;
   isLoggedIn: boolean = false;
-  @Output() onCountChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onCountLikesChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onCountDislikesChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private articleService: ArticleService,
               private commentService: CommentService,
@@ -50,11 +51,11 @@ export class CountSelectorComponent implements OnInit {
   }
 
   countChangeLike() {
-    this.onCountChange.emit(this.likesCount);
+    this.onCountLikesChange.emit(this.likesCount);
   }
 
   countChangeDisLike() {
-    this.onCountChange.emit(this.dislikesCount);
+    this.onCountDislikesChange.emit(this.dislikesCount);
   }
 
   dislikeCount() {

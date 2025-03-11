@@ -11,7 +11,7 @@ import {RequestService} from "../../shared/services/request.service";
 import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subscription} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-main',
@@ -140,11 +140,16 @@ export class MainComponent implements OnInit, OnDestroy {
               private router: Router,) {
   }
 
-  private subscription: Subscription | null = null;
+ // private subscription: Subscription | null = null;
+  private _destroy$ = new Subject<void>();
 
 
   ngOnInit(): void {
-   this.subscription = this.activatedRoute.params.subscribe(params => {
+   this.activatedRoute.params
+     .pipe(
+       takeUntil(this._destroy$)
+     )
+     .subscribe(params => {
       this.articleService.getPopularArticles()
         .subscribe(data => {
           this.popularArticles = data as ArticleType[];
@@ -210,6 +215,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription?.unsubscribe()
+   // this.subscription?.unsubscribe()
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 }
