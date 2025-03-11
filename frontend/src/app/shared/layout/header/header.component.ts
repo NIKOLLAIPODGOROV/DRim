@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../../core/auth/auth.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
@@ -7,13 +7,14 @@ import {HttpErrorResponse} from "@angular/common/http";
 // import {LoaderService} from "../../services/loader.service";
 import {UserInfoType} from "../../../../types/user-info.type";
 import {UserService} from "../../services/user.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy  {
 
   isLogged: boolean = false;
   user!: UserInfoType;
@@ -27,13 +28,15 @@ export class HeaderComponent implements OnInit {
     this.isLogged = this.authService.getIsLoggedIn();
   }
 
+  private subscription: Subscription | null = null;
+
   ngOnInit(): void {
     // this.loaderService.show();
     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = true;
     });
 
-    this.userService.getUserInfo()
+    this.subscription = this.userService.getUserInfo()
       .subscribe(data => {
        if (data) {
          this.user = data as UserInfoType;
@@ -63,6 +66,10 @@ export class HeaderComponent implements OnInit {
     this.isLogged = false;
     this._snackBar.open('Разлогинен успешно');
     this.router.navigate(['/']);
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
   }
 
 }

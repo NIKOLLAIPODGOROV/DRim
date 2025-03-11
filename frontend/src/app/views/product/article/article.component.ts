@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
 import {environment} from "../../../../environments/environment";
 import {ArticleService} from "../../../shared/services/article.service";
@@ -7,15 +7,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../core/auth/auth.service";
 import {CommentType} from "../../../../types/comment.type";
 import {CommentService} from "../../../shared/services/comment.service";
-import {CommentTriviaType} from "@angular/compiler-cli/src/ngtsc/typecheck/src/comments";
 import {FormBuilder, Validators} from "@angular/forms";
-import {RequestsType} from "../../../../types/requests.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
-import {CommentComponent} from "../../../shared/components/comment/comment.component";
-import {CommentActionType} from "../../../../types/comment-action.type";
-import {ActionType} from "../../../../types/action.type";
+
 
 @Component({
   selector: 'article',
@@ -34,10 +30,9 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input() text!: string;
   action: string = '';
 
-  serverStaticPath = environment.serverStaticPath;
   likesCount: number | null = null;
   dislikesCount: number | null = null;
-  isLoggedIn: boolean = false;
+  isLogged: boolean = false;
   noComments: boolean = false;
 
   textForm = this.fb.group({
@@ -52,15 +47,25 @@ export class ArticleComponent implements OnInit, OnDestroy {
               private router: Router,
               private fb: FormBuilder,
               private _snackBar: MatSnackBar,) {
+    this.isLogged = this.authService.getIsLoggedIn();
   }
 
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
+    if (this.isLogged) {
+      this.isLogged = true;
+    }
     this.activatedRoute.params.subscribe(params => {
       this.subscription = this.articleService.getArticle(params['url'])
         .subscribe(data => {
           this.article = data;
+
+          if (this.article.comments) {
+            this.noComments = false;
+          } else {
+            this.noComments = true;
+          }
 
           this.commentService.getArticleCommentActions(this.article.id)
             .subscribe((data: DefaultResponseType | {comment: string,action: string})  => {
@@ -90,7 +95,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 if (!this.comments) {
                   this.noComments = true;
                 }
-               // return this.comments = data.comments as CommentType[];
+                return this.comments = data.comments as CommentType[];
 
               });
           }
@@ -104,7 +109,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   addComment() {
-   if (!this.isLoggedIn) {
+   if (!this.isLogged) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
         const paramsObject = {
           article: this.article.id,

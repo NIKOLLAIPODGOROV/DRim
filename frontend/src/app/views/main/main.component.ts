@@ -143,7 +143,6 @@ export class MainComponent implements OnInit, OnDestroy {
  // private subscription: Subscription | null = null;
   private _destroy$ = new Subject<void>();
 
-
   ngOnInit(): void {
    this.activatedRoute.params
      .pipe(

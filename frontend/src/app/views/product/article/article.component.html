@@ -160,14 +160,14 @@
 
         <div class="comments">
           <div class="comments-title">Комментарии к статье</div>
-          <div *ngIf="isLoggedIn" class="comments-enter">
+          <div *ngIf="!isLogged" class="comments-enter">
             Чтобы оставлять комментарии, <span routerLink="/login">войдите</span> или <span routerLink="/signup">зарегистрируйтесь.</span>
           </div>
 
-          <div *ngIf="noComments && !isLoggedIn" class="comments-enter extra-text">
+          <div *ngIf="noComments && isLogged" class="comments-enter extra-text">
             Будьте первым, кто оставит свой комментарий к статье!
           </div>
-          <form class="field-for-comments" [formGroup]="textForm" *ngIf="!isLoggedIn">
+          <form class="field-for-comments" [formGroup]="textForm" *ngIf="isLogged">
         <textarea type="text" class="my-comment"
                   [ngStyle]="{'border-color': textForm.get('text')?.invalid
                   && (textForm.get('text')?.dirty || textForm.get('text')?.touched) ? 'red' : ''}"

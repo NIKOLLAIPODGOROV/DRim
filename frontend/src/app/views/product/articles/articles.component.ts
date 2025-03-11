@@ -127,7 +127,6 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
           });
       });
 
-
     this.activatedRoute.queryParams.subscribe(params => {
       this.activeParams = ActiveParamsUtils.processParams(params);
 
@@ -140,8 +139,6 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
         this.open = true;
       }
     });
-
-
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {
