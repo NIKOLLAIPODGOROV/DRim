@@ -46,21 +46,21 @@ export class FooterComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    if (this.authService.getIsLoggedIn()) {
-      this.userService.getUserInfo()
-        .subscribe((data: UserInfoType | DefaultResponseType) => {
-          if ((data as DefaultResponseType).error !== undefined) {
-            throw new Error((data as DefaultResponseType).message);
-          }
-
-          const userInfo = data as UserInfoType;
-
-          const paramsToUpdate = {
-            name: userInfo.name ? userInfo.name : '',
-          };
-
-        });
-    }
+    // if (this.authService.getIsLoggedIn()) {
+    //   this.userService.getUserInfo()
+    //     .subscribe((data: UserInfoType | DefaultResponseType) => {
+    //       if ((data as DefaultResponseType).error !== undefined) {
+    //         throw new Error((data as DefaultResponseType).message);
+    //       }
+    //
+    //       const userInfo = data as UserInfoType;
+    //
+    //       const paramsToUpdate = {
+    //         name: userInfo.name ? userInfo.name : '',
+    //       };
+    //
+    //     });
+    // }
   }
 
   createRequests() {
@@ -73,18 +73,13 @@ export class FooterComponent implements OnInit, OnDestroy {
         type: 'consultation',
       };
 
-      this.requestService.createRequest(paramsObject)
+    this.requestService.createRequest(paramsObject)
         .subscribe({
           next: (data: DefaultResponseType) => {
             if ((data as DefaultResponseType).error !== undefined) {
+              this.isFormEmpty = true;
               throw new Error(((data as DefaultResponseType).message));
             }
-            this.dialogRef = this.dialog.open(this.popup);
-           this.dialogRef.backdropClick()
-              .subscribe(() => {
-                this.router.navigate(['/']);
-              });
-
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.error.message) {
@@ -107,10 +102,9 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   call() {
-    this.isFormEmpty = false;
     // this.createRequests()
     this.dialogRef = this.dialog.open(this.popup);
-    this.subscription = this.dialogRef.backdropClick()
+    this.dialogRef.backdropClick()
       .subscribe(() => {
         this.router.navigate(['/']);
       });

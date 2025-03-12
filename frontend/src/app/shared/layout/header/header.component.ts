@@ -4,7 +4,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
-// import {LoaderService} from "../../services/loader.service";
 import {UserInfoType} from "../../../../types/user-info.type";
 import {UserService} from "../../services/user.service";
 import {Subscription} from "rxjs";
@@ -23,7 +22,6 @@ export class HeaderComponent implements OnInit, OnDestroy  {
               private _snackBar: MatSnackBar,
               private router: Router,
               private userService: UserService,
-             //  private loaderService: LoaderService,
               ) {
     this.isLogged = this.authService.getIsLoggedIn();
   }
@@ -32,18 +30,20 @@ export class HeaderComponent implements OnInit, OnDestroy  {
 
   ngOnInit(): void {
     // this.loaderService.show();
-    this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
-      this.isLogged = true;
+     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
+      this.isLogged = isLoggedIn;
     });
 
     this.subscription = this.userService.getUserInfo()
-      .subscribe(data => {
-       if (data) {
+      .subscribe((data: UserInfoType | DefaultResponseType) => {
+      if ((data as DefaultResponseType).error !== undefined) {
+        throw new Error((data as DefaultResponseType).message);
+      }
+       if (this.isLogged) {
          this.user = data as UserInfoType;
        }
        console.log(this.user.name);
-        this.isLogged = true;
-      })
+      });
   }
 
   logout(): void {
@@ -57,7 +57,6 @@ export class HeaderComponent implements OnInit, OnDestroy  {
           this.doLogout();
         }
       });
-    this.isLogged = false;
   }
 
   doLogout(): void {

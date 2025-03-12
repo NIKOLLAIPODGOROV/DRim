@@ -36,11 +36,12 @@ export class CommentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
         .subscribe(data => {
-          this.article.comments = data.comments as CommentType[];
+          if (data ) {
+            this.article.comments = data.comments as CommentType[];
+          }
         });
 
     });

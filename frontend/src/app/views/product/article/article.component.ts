@@ -11,6 +11,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
+import {CommentActionType} from "../../../../types/comment-action.type";
 
 
 @Component({
@@ -29,16 +30,20 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input() allCounts: number[] = [];
   @Input() text!: string;
   action: string = '';
+commentAction: CommentActionType[] = [];
 
   likesCount: number | null = null;
   dislikesCount: number | null = null;
   isLogged: boolean = false;
   noComments: boolean = false;
 
+  get hasComments() {
+    return this.comments.length > 0;
+  }
+
   textForm = this.fb.group({
     text: ['', Validators.required],
-
-  })
+  });
 
   constructor(private articleService: ArticleService,
               private activatedRoute: ActivatedRoute,
@@ -53,28 +58,30 @@ export class ArticleComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    if (this.isLogged) {
-      this.isLogged = true;
-    }
+    this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
+      this.isLogged = isLoggedIn;
+    });
     this.activatedRoute.params.subscribe(params => {
       this.subscription = this.articleService.getArticle(params['url'])
-        .subscribe(data => {
+        .subscribe((data:ArticleType) => {
           this.article = data;
 
-          if (this.article.comments) {
-            this.noComments = false;
-          } else {
+          if (this.hasComments) {
             this.noComments = true;
           }
 
           this.commentService.getArticleCommentActions(this.article.id)
-            .subscribe((data: DefaultResponseType | {comment: string,action: string})  => {
+            .subscribe((data: DefaultResponseType | CommentActionType[])  => {
               if ((data as DefaultResponseType).error !== undefined) {
                 throw new Error(((data as DefaultResponseType).message));
               }
-              return  data ;
-
-            })
+              //здесь нужно сохранить данные о действиях и соотнести их с данными о коментариях по id
+              this.commentAction = data as CommentActionType[];
+              if (this.commentAction) {
+                this.commentAction.forEach(item => item.comment === this.comment?.id)
+              }
+              return this.commentAction;
+            });
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe(data => {
@@ -92,10 +99,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 for (let i = 1; i <= data.allCounts; i++) {
                   this.allCounts.push(i);
                 }
-                if (!this.comments) {
+                if (this.hasComments) {
                   this.noComments = true;
                 }
-                return this.comments = data.comments as CommentType[];
+                this.comments = data.comments as CommentType[];
 
               });
           }
@@ -109,12 +116,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   addComment() {
-   if (!this.isLogged) {
+   if (this.isLogged) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
-        const paramsObject = {
-          article: this.article.id,
-          text: this.textForm.value.text,
-        };
+        // const paramsObject = {
+        //   article: this.article.id,
+        //   text: this.textForm.value.text,
+        // };
         this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
@@ -122,6 +129,15 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 throw new Error(((data as DefaultResponseType).message));
               }
               this._snackBar.open('Комментарий добавлен');
+
+              this.commentService.getComments(3, this.article.id)
+                .subscribe(data => {
+                  this.allCounts = [];
+                  for (let i = 1; i <= data.allCounts; i++) {
+                    this.allCounts.push(i);
+                  }
+                  this.comments = data.comments as CommentType[];
+                });
             },
             error: (errorResponse: HttpErrorResponse) => {
               if (errorResponse.error && errorResponse.error.message) {

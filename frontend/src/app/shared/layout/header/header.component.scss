@@ -62,15 +62,18 @@ header.header {
 
         a {
           margin-right: 7px;
-
+          position: relative;
+          cursor: pointer;
+        }
           span {
             display: flex;
             align-items: center;
             justify-content: center;
+
+          }
+
           }
         }
       }
     }
-  }
 
-}

@@ -11,7 +11,7 @@ import {RequestService} from "../../shared/services/request.service";
 import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
-import {Subject, takeUntil} from "rxjs";
+import {Subject, Subscription, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-main',
@@ -130,6 +130,8 @@ export class MainComponent implements OnInit, OnDestroy {
   @ViewChild('popup') popup!: TemplateRef<ElementRef>;
   dialogRef: MatDialogRef<any> | null = null;
 
+  isLogged: boolean = false;
+
   constructor(private articleService: ArticleService,
               private activatedRoute: ActivatedRoute,
               private requestService: RequestService,
@@ -138,16 +140,22 @@ export class MainComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               private fb: FormBuilder,
               private router: Router,) {
+    this.isLogged = this.authService.getIsLoggedIn();
   }
 
- // private subscription: Subscription | null = null;
-  private _destroy$ = new Subject<void>();
+  private subscription: Subscription | null = null;
+ // private _destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-   this.activatedRoute.params
-     .pipe(
-       takeUntil(this._destroy$)
-     )
+    this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
+      this.isLogged = isLoggedIn;
+    });
+
+
+  this.subscription = this.activatedRoute.params
+     // .pipe(
+     //   takeUntil(this._destroy$)
+     // )
      .subscribe(params => {
       this.articleService.getPopularArticles()
         .subscribe(data => {
@@ -157,7 +165,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   createAuthRequest() {
-
+if (this.isLogged) {
     if (this.callForm.valid && this.callForm.value.name
       && this.callForm.value.phone && this.callForm.value.service) {
 
@@ -172,14 +180,9 @@ export class MainComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (data: DefaultResponseType) => {
             if ((data as DefaultResponseType).error !== undefined) {
+              this.isFormEmpty = true;
               throw new Error(((data as DefaultResponseType).message));
             }
-            this.dialogRef = this.dialog.open(this.popup);
-            this.dialogRef.backdropClick()
-              .subscribe(() => {
-                this.router.navigate(['/']);
-              });
-            this.isFormEmpty = true;
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.error.message) {
@@ -190,20 +193,19 @@ export class MainComponent implements OnInit, OnDestroy {
           }
         });
     } else {
+      this.isFormEmpty = false;
       this.callForm.markAllAsTouched();
       this._snackBar.open('Заполните необходимые поля');
+    }
     }
   }
 
   closePopup() {
     this.dialogRef?.close();
     this.router.navigate(['/']);
-    this.isFormEmpty = false;
   }
 
   call() {
-    this.authService.getIsLoggedIn()
-    // this.createAuthRequest()
     this.dialogRef = this.dialog.open(this.popup);
     this.dialogRef.backdropClick()
       .subscribe(() => {
@@ -214,8 +216,8 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-   // this.subscription?.unsubscribe()
-    this._destroy$.next();
-    this._destroy$.complete();
+    this.subscription?.unsubscribe()
+   //  this._destroy$.next();
+   //  this._destroy$.complete();
   }
 }
