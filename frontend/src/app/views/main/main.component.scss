@@ -3,48 +3,58 @@
 @import "../../../assets/styles/global";
 
 .main {
-  background-image: url("../../../assets/images/page/main-banners/Banner1.png");
-  background-repeat: no-repeat;
-  background-position-x: calc(50% + 0px);
-  width: 100%;
-  height: 500px;
+ // background-image: url("../../../assets/images/mains/main1.png");
+ // background-repeat: no-repeat;
+ // background-position-x: calc(50% + 0px);
+//  width: 100%;
+//  height: 500px;
 
   .container {
 
     .main-carousel {
       position: relative;
-
       .main-item {
         width: 100%;
+        height: 500px;
 
         .main-item-head {
-          display: flex;
-          align-items: center;
+          //display: flex;
+          //align-items: center;
 
           .main-item-image {
-
+            width: 100%;
+            height: 500px;
+            background-position: center;
+            background-size: cover;
           }
         }
+
+       .owl-them .owl-nav.disabled+ .owl-dots {
+         color: #FFFFFF;
+          margin-top: -35px!important ;
+         z-index: 10;
+        }
       }
-    }
 
     .main-arrows {
       display: flex;
 
       a {
-        top: calc(50% - 5px);
+        top: calc(50% - 14px);
         display: flex;
         position: absolute;
         cursor: pointer;
+        z-index: 10;
 
         &.move-backward {
-          left: -20px;
+          left: 10px;
         }
 
         &.move-forward {
-          right: -20px;
+          right: 10px;
         }
       }
+    }
     }
   }
 }
@@ -394,7 +404,9 @@
           top: calc(50% - 5px);
           display: flex;
           position: absolute;
+          z-index: 10;
           cursor: pointer;
+          background-color: blue;
 
           &.move-backward {
             left: -20px;
@@ -513,4 +525,5 @@
     }
   }
 }
+
 

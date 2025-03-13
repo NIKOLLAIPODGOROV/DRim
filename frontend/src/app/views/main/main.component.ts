@@ -32,7 +32,7 @@ export class MainComponent implements OnInit, OnDestroy {
     mouseDrag: false,
     touchDrag: false,
     pullDrag: false,
-    margin: 24,
+    // margin: 24,
     dots: false,
     navSpeed: 700,
     navText: ['', ''],
@@ -46,8 +46,14 @@ export class MainComponent implements OnInit, OnDestroy {
       740: {
         items: 1
       },
+      940: {
+        items: 1
+      },
+      1400: {
+        items: 1
+      },
     },
-    nav: true
+    nav: false
   };
 
   customOptionsReviews: OwlOptions = {
@@ -75,16 +81,16 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   mains = [
-{
-  image: 'Banner1.png'
-},
     {
-      image: 'Banner2.png'
+      image: 'main1.png',
     },
     {
-      image: 'Banner3.png'
+      image: 'main2.png',
+    },
+    {
+      image: 'main3.png',
     }
-  ]
+  ];
 
   reviews = [
     {
@@ -144,28 +150,28 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private subscription: Subscription | null = null;
- // private _destroy$ = new Subject<void>();
+
+  // private _destroy$ = new Subject<void>();
 
   ngOnInit(): void {
     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = isLoggedIn;
     });
 
-
-  this.subscription = this.activatedRoute.params
-     // .pipe(
-     //   takeUntil(this._destroy$)
-     // )
-     .subscribe(params => {
-      this.articleService.getPopularArticles()
-        .subscribe(data => {
-          this.popularArticles = data as ArticleType[];
-        });
-    });
+    this.subscription = this.activatedRoute.params
+      // .pipe(
+      //   takeUntil(this._destroy$)
+      // )
+      .subscribe(params => {
+        this.articleService.getPopularArticles()
+          .subscribe(data => {
+            this.popularArticles = data as ArticleType[];
+          });
+      });
   }
 
   createAuthRequest() {
-if (this.isLogged) {
+     if (this.isLogged) {
     if (this.callForm.valid && this.callForm.value.name
       && this.callForm.value.phone && this.callForm.value.service) {
 
@@ -197,7 +203,7 @@ if (this.isLogged) {
       this.callForm.markAllAsTouched();
       this._snackBar.open('Заполните необходимые поля');
     }
-    }
+      }
   }
 
   closePopup() {
@@ -217,7 +223,7 @@ if (this.isLogged) {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe()
-   //  this._destroy$.next();
-   //  this._destroy$.complete();
+    //  this._destroy$.next();
+    //  this._destroy$.complete();
   }
 }

@@ -3,9 +3,11 @@
         <div class="main-carousel">
           <owl-carousel-o [options]="customOptions" #owlCarRev1>
             <ng-template carouselSlide *ngFor="let main of mains">
-
-                  <div class="main-item-image" style="background-image: url('/assets/images/page/main-banners/Banner2.png')"></div>
-
+              <div class="main-item">
+                <div class="main-item-head">
+                  <div class="main-item-image" style="background-image: url('/assets/images/mains/{{main.image}}')"></div>
+              </div>
+              </div>
             </ng-template>
           </owl-carousel-o>
           <div class="main-arrows">
