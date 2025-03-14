@@ -17,12 +17,12 @@ import {MatDialogModule} from "@angular/material/dialog";
     CountSelectorComponent,
   ],
   imports: [
+    FormsModule,
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatDialogModule,
-    FormsModule
   ],
   exports: [ProductCardComponent, CategoryFilterComponent, CommentComponent, CountSelectorComponent],
 })

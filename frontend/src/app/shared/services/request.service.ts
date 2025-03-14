@@ -13,9 +13,9 @@ export class RequestService {
   constructor(private http: HttpClient) {
   }
 
-  createAuthRequest(params: RequestsType): Observable<DefaultResponseType> {
-    return this.http.post<DefaultResponseType>(environment.api + 'requests', params, {withCredentials: true});
-  }
+  // createAuthRequest(params: RequestsType): Observable<DefaultResponseType> {
+  //   return this.http.post<DefaultResponseType>(environment.api + 'requests', params, {withCredentials: true});
+  // }
 
   createRequest(params: RequestsType): Observable<DefaultResponseType> {
     return this.http.post<DefaultResponseType>(environment.api + 'requests', params);

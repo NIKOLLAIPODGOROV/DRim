@@ -5,12 +5,10 @@ text?: string,
   comments?: CommentType[],
   commentsCount?: string,
       id: string,
-      title: string,
-      description: string,
-      image: string,
+      title?: string,
+      description?: string,
+      image?: string,
       date: string,
       category: string,
       url: string,
-
-  isInFavorite?: boolean
 }

@@ -171,9 +171,9 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   createAuthRequest() {
-     if (this.isLogged) {
+
     if (this.callForm.valid && this.callForm.value.name
-      && this.callForm.value.phone && this.callForm.value.service) {
+      && this.callForm.value.phone && this.callForm.value.service && this.callForm.value.type) {
 
       const paramsObject: RequestsType = {
         service: this.callForm.value.service,
@@ -182,7 +182,7 @@ export class MainComponent implements OnInit, OnDestroy {
         type: 'order',
       };
 
-      this.requestService.createAuthRequest(paramsObject)
+      this.requestService.createRequest(paramsObject)
         .subscribe({
           next: (data: DefaultResponseType) => {
             if ((data as DefaultResponseType).error !== undefined) {
@@ -203,7 +203,6 @@ export class MainComponent implements OnInit, OnDestroy {
       this.callForm.markAllAsTouched();
       this._snackBar.open('Заполните необходимые поля');
     }
-      }
   }
 
   closePopup() {
@@ -217,8 +216,6 @@ export class MainComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.router.navigate(['/']);
       });
-
-    this.isFormEmpty = true;
   }
 
   ngOnDestroy() {

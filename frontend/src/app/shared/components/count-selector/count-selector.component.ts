@@ -1,11 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
 import {ArticleService} from "../../services/article.service";
-import {pipe} from "rxjs";
 import {CommentType} from "../../../../types/comment.type";
 import {CommentService} from "../../services/comment.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
-import {AuthService} from "../../../core/auth/auth.service";
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -34,15 +32,20 @@ export class CountSelectorComponent implements OnInit {
 
   constructor(private articleService: ArticleService,
               private commentService: CommentService,
-              private authService: AuthService,
-              private activatedRoute: ActivatedRoute,) {
+              private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.params?.subscribe(params => {
       this.articleService.getArticle(params['url'])
-        .subscribe(data => {
-          this.article.comments = data.comments as CommentType[];
+        .subscribe((data: ArticleType) => {
+         if (data) {
+           this.article.comments = data.comments as CommentType[];
+           this.noComments = true;
+         } else {
+           this.noComments = false;
+         }
+
         });
 
     });
