@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
 import {CommentType} from "../../../../types/comment.type";
 import {AuthService} from "../../../core/auth/auth.service";
@@ -7,13 +7,14 @@ import {ActivatedRoute} from "@angular/router";
 import {ArticleService} from "../../services/article.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {EActions} from "../../../constants/enums";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'comment',
   templateUrl: './comment.component.html',
   styleUrls: ['./comment.component.scss']
 })
-export class CommentComponent implements OnInit {
+export class CommentComponent implements OnInit, OnDestroy  {
 
   action: string = '';
 
@@ -34,21 +35,23 @@ export class CommentComponent implements OnInit {
               private articleService: ArticleService,
               private activatedRoute: ActivatedRoute,) {
   }
+  private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-      this.articleService.getArticle(params['url'])
-        .subscribe((data:  ArticleType) => {
-          if (data.comments ) {
-            this.article.comments = data.comments as CommentType[];
-            this.noComments = true;
-          } else {
-            this.noComments = false;
-          }
-        });
-    });
-  }
 
+    // this.activatedRoute.params.subscribe(params => {
+    //   this.articleService.getArticle(params['url'])
+    //     .subscribe((data: ArticleType) => {
+    //       if (data.comments) {
+    //         // this.article у меня здесь undefined
+    //         this.article.comments = data.comments as CommentType[];
+    //         this.noComments = true;
+    //       } else {
+    //         this.noComments = false;
+    //       }
+    //     });
+    // });
+  }
   updateCount(value: number, action: string) {
     if (this.authService.getIsLoggedIn()) {
       this.likesCount = value;
@@ -66,4 +69,9 @@ export class CommentComponent implements OnInit {
     }
 
   protected readonly EActions = EActions;
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe()
+  }
+
 }

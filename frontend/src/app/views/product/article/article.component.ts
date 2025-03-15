@@ -1,13 +1,12 @@
-import {Component, Input, OnDestroy, OnInit, Optional, Self} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
-import {environment} from "../../../../environments/environment";
 import {ArticleService} from "../../../shared/services/article.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../core/auth/auth.service";
 import {CommentType} from "../../../../types/comment.type";
 import {CommentService} from "../../../shared/services/comment.service";
-import {FormBuilder, NgControl, Validators} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
@@ -29,7 +28,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input() offset: number | null = null;
   @Input() allCounts: number[] = [];
   @Input() text!: string;
-  action: string = '';
+  @Input() action: string = '';
   commentAction: CommentActionType[] = [];
 
   likesCount: number | null = null;
@@ -42,7 +41,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   textForm = this.fb.group({
-    text: ['', Validators.required],
+    text: ['', Validators.required]
   });
 
   constructor(private articleService: ArticleService,
@@ -61,26 +60,20 @@ export class ArticleComponent implements OnInit, OnDestroy {
     // this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
     //   this.isLogged = isLoggedIn;
     this.activatedRoute.params.subscribe(params => {
-      this.articleService.getArticle(params['url'])
+      this.subscription = this.articleService.getArticle(params['url'])
         .subscribe(data => {
-
           this.article = data as ArticleType;
+          // if (this.hasComments) {
+          //   this.noComments = true;
+          // }
 
-          if (this.hasComments) {
-            this.noComments = true;
-          }
-
-          this.articleService.getRelatedArticles(this.article.url)
+          this.subscription = this.subscription = this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
               this.relatedArticles = data;
-
-              if (!this.relatedArticles) {
-                this.router.navigate(['/']);
-              }
             });
 
           if (this.offset && this.offset > 0) {
-            this.commentService.getComments(3, this.article.id)
+            this.subscription = this.commentService.getComments(3, this.article.id)
               .subscribe(data => {
                 this.allCounts = [];
                 for (let i = 1; i <= data.allCounts; i++) {
@@ -90,13 +83,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
                   this.noComments = true;
                 }
                 this.comments = data.comments as CommentType[];
-
               });
           }
           if (data.comments) {
             this.comments = data.comments as CommentType[];
 
-            this.commentService.getArticleCommentActions(this.article.id)
+            this.subscription = this.commentService.getArticleCommentActions(this.article.id)
               .subscribe((data: DefaultResponseType | CommentActionType[]) => {
                 if ((data as DefaultResponseType).error !== undefined) {
                   throw new Error(((data as DefaultResponseType).message));
@@ -113,10 +105,14 @@ export class ArticleComponent implements OnInit, OnDestroy {
                   };
 
                 });
-                console.log(this.comments);
-                 return this.comments as CommentType[];
+
               });
+
           }
+          if (this.comments) {
+            this.article.comments = this.comments;
+          }
+          console.log(this.comments);
         });
     });
     // });
@@ -125,7 +121,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   addComment() {
     if (this.isLogged) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
-        this.commentService.addComment(this.textForm.value.text, this.article.id)
+        this.subscription = this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
               if ((data as DefaultResponseType).error !== undefined) {
@@ -157,10 +153,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
     }
 
   }
-
-
   ngOnDestroy() {
     this.subscription?.unsubscribe()
   }
-
 }

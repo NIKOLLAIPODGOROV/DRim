@@ -1,4 +1,4 @@
-<section class="article">
+<section class="article" *ngIf="this.article">
   <div class="container">
     <div class="article-small-head"><span>Блог /</span>{{article?.title}}</div>
     <div class="article-head">
@@ -168,11 +168,12 @@
             Будьте первым, кто оставит свой комментарий к статье!
           </div>
           <form class="field-for-comments" [formGroup]="textForm" *ngIf="isLogged">
-        <textarea type="text" class="my-comment"
+            <div class="data-form-inputs">
+            <textarea cols="30" rows="5" class="my-comment"
                   [ngStyle]="{'border-color': textForm.get('text')?.invalid
                   && (textForm.get('text')?.dirty || textForm.get('text')?.touched) ? 'red' : ''}"
                   placeholder="Напишите Ваш комментарий к статье..." formControlName="text"></textarea>
-
+            </div>
             <button class="button comment-action" (click)="addComment()">Опубликовать комментарий</button>
           </form>
 

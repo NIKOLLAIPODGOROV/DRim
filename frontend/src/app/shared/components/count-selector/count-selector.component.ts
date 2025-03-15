@@ -25,31 +25,14 @@ export class CountSelectorComponent implements OnInit {
   @Input() comment: CommentType | null = null;
   @Input() offset: number | null = null;
   @Input() allCounts: number[] = [];
-  noComments: boolean = false;
   isLoggedIn: boolean = false;
   @Output() onCountLikesChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() onCountDislikesChange: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor(private articleService: ArticleService,
-              private commentService: CommentService,
-              private activatedRoute: ActivatedRoute) {
+  constructor(private commentService: CommentService) {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.params?.subscribe(params => {
-      this.articleService.getArticle(params['url'])
-        .subscribe((data: ArticleType) => {
-         if (data) {
-           this.article.comments = data.comments as CommentType[];
-           this.noComments = true;
-         } else {
-           this.noComments = false;
-         }
-
-        });
-
-    });
-
   }
 
   countChangeLike() {
@@ -71,7 +54,7 @@ export class CountSelectorComponent implements OnInit {
           if ((data as DefaultResponseType).error !== undefined) {
             throw new Error((data as DefaultResponseType).message);
           }
-          this.countLike = this.action;
+          this.countDislike = this.action;
         });
     }
   }
@@ -90,5 +73,4 @@ export class CountSelectorComponent implements OnInit {
         });
     }
   }
-
 }
