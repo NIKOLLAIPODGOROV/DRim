@@ -50,6 +50,7 @@ header.header {
         color: $blue-text-color;
         text-decoration: none;
         margin-right: 141px;
+
         &.isLogged {
           margin-right: 89px;
         }
@@ -65,15 +66,14 @@ header.header {
           position: relative;
           cursor: pointer;
         }
-          span {
-            display: flex;
-            align-items: center;
-            justify-content: center;
 
-          }
-
-          }
+        span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
     }
+  }
+}
 

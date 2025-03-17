@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../../../core/auth/auth.service";
 import {FormBuilder, Validators} from "@angular/forms";
@@ -46,7 +46,7 @@ export class LoginComponent {
               throw new Error(error);
             }
 
-            this.authService.setTokens(loginResponse.accessToken,  loginResponse.refreshToken);
+            this.authService.setTokens(loginResponse.accessToken, loginResponse.refreshToken);
             this.authService.userId = loginResponse.userId;
             this._snackBar.open('Вы успешно авторизовались');
             this.router.navigate(['/']);
@@ -61,5 +61,4 @@ export class LoginComponent {
         });
     }
   }
-
 }

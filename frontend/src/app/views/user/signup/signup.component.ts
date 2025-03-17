@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {AuthService} from "../../../core/auth/auth.service";
@@ -15,7 +15,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class SignupComponent {
 
   signupForm = this.fb.group({
-    name: ['', [ Validators.required]],
+    name: ['', [Validators.required]],
     email: ['', [Validators.email, Validators.required]],
     password: ['', [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)]],
     agree: [false, [Validators.requiredTrue]],
@@ -48,7 +48,7 @@ export class SignupComponent {
               throw new Error(error);
             }
 
-            this.authService.setTokens(loginResponse.accessToken,  loginResponse.refreshToken);
+            this.authService.setTokens(loginResponse.accessToken, loginResponse.refreshToken);
             this.authService.userId = loginResponse.userId;
             this._snackBar.open('Вы успешно зарегистрировались');
             this.router.navigate(['/']);
@@ -63,5 +63,4 @@ export class SignupComponent {
         });
     }
   }
-
 }

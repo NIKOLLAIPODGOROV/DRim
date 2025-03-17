@@ -22,8 +22,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
-  @Input() comments: CommentType[] = [];
-  @Input() comment: CommentType | null = null;
+   comments: CommentType[] = [];
+   comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
   @Input() offset: number | null = null;
   @Input() allCounts: number[] = [];
@@ -67,7 +67,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
           //   this.noComments = true;
           // }
 
-          this.subscription = this.subscription = this.articleService.getRelatedArticles(this.article.url)
+           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
               this.relatedArticles = data;
             });
@@ -88,7 +88,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
           if (data.comments) {
             this.comments = data.comments as CommentType[];
 
-            this.subscription = this.commentService.getArticleCommentActions(this.article.id)
+             this.commentService.getArticleCommentActions(this.article.id)
               .subscribe((data: DefaultResponseType | CommentActionType[]) => {
                 if ((data as DefaultResponseType).error !== undefined) {
                   throw new Error(((data as DefaultResponseType).message));
@@ -107,36 +107,30 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 });
 
               });
+            if (this.comments) {
+              this.article.comments = this.comments;
+            }
 
           }
-          if (this.comments) {
-            this.article.comments = this.comments;
-          }
-          console.log(this.comments);
+
         });
     });
     // });
   }
 
+
+
+
   addComment() {
     if (this.isLogged) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
-        this.subscription = this.commentService.addComment(this.textForm.value.text, this.article.id)
+       this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
               if ((data as DefaultResponseType).error !== undefined) {
                 throw new Error(((data as DefaultResponseType).message));
               }
               this._snackBar.open('Комментарий добавлен');
-
-              this.commentService.getComments(3, this.article.id)
-                .subscribe(data => {
-                  this.allCounts = [];
-                  for (let i = 1; i <= data.allCounts; i++) {
-                    this.allCounts.push(i);
-                  }
-                  this.comments = data.comments as CommentType[];
-                });
             },
             error: (errorResponse: HttpErrorResponse) => {
               if (errorResponse.error && errorResponse.error.message) {
@@ -147,12 +141,25 @@ export class ArticleComponent implements OnInit, OnDestroy {
             }
           });
       } else {
+        this.noComments = false;
         this.textForm.markAllAsTouched();
         this._snackBar.open('Заполните необходимые поля');
       }
+
     }
 
+    this.commentService.getComments(3, this.article.id)
+      .subscribe(data => {
+        this.allCounts = [];
+        for (let i = 1; i <= data.allCounts; i++) {
+          this.allCounts.push(i);
+        }
+        this.comments = data.comments as CommentType[];
+      });
+
+     console.log(this.comments);
   }
+
   ngOnDestroy() {
     this.subscription?.unsubscribe()
   }

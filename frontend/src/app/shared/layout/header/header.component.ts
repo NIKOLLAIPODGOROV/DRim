@@ -13,7 +13,7 @@ import {Subscription} from "rxjs";
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit, OnDestroy  {
+export class HeaderComponent implements OnInit, OnDestroy {
 
   isLogged: boolean = false;
   user!: UserInfoType;
@@ -22,27 +22,26 @@ export class HeaderComponent implements OnInit, OnDestroy  {
               private _snackBar: MatSnackBar,
               private router: Router,
               private userService: UserService,
-              ) {
+  ) {
     this.isLogged = this.authService.getIsLoggedIn();
   }
 
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    // this.loaderService.show();
-     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
+    this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = isLoggedIn;
     });
 
     this.subscription = this.userService.getUserInfo()
       .subscribe((data: UserInfoType | DefaultResponseType) => {
-      if ((data as DefaultResponseType).error !== undefined) {
-        throw new Error((data as DefaultResponseType).message);
-      }
-       if (this.isLogged) {
-         this.user = data as UserInfoType;
-       }
-       console.log(this.user.name);
+        if ((data as DefaultResponseType).error !== undefined) {
+          throw new Error((data as DefaultResponseType).message);
+        }
+        if (this.isLogged) {
+          this.user = data as UserInfoType;
+        }
+        console.log(this.user.name);
       });
   }
 
@@ -70,5 +69,4 @@ export class HeaderComponent implements OnInit, OnDestroy  {
   ngOnDestroy() {
     this.subscription?.unsubscribe()
   }
-
 }

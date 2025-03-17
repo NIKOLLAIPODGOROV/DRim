@@ -1,10 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
-import {ArticleService} from "../../services/article.service";
 import {CommentType} from "../../../../types/comment.type";
 import {CommentService} from "../../services/comment.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
-import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'count-selector',
@@ -12,7 +10,6 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./count-selector.component.scss']
 })
 export class CountSelectorComponent implements OnInit {
-
 
   @Input() action: string = '';
   @Input() dislikesCount: number = 0;

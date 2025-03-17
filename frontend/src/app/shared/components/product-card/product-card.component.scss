@@ -7,14 +7,8 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  //margin-right: 24px;
   width: 292px;
   height: 571px;
-
-  //&:last-child {
-  //  margin-right: 0;
-  //}
-
 
   .product-card-item-type {
     .button-transparent {
@@ -25,7 +19,6 @@
       font-size: 11px;
       font-weight: 400;
       padding: 10px 18px;
-
       position: absolute;
       top: 12px;
       right: 12px;
@@ -90,5 +83,4 @@
       margin-left: 14px;
     }
   }
-
 }

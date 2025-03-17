@@ -3,7 +3,6 @@ import {ActiveParamsType} from "../../../../types/active-params.type";
 import {ActiveParamsUtils} from "../../utils/active-params.utils";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
-import {CategoryType} from "../../../../types/category.type";
 
 @Component({
   selector: 'category-filter',
@@ -14,7 +13,7 @@ export class CategoryFilterComponent implements OnInit {
 
   @Input() categoryWithType: CategoryWithTypeType | null = null;
   @Input() category: string | null = null;
-  // @Output() toggle = new EventEmitter<any[]>()
+
   open = false;
   activeParams: ActiveParamsType = {categories: []};
   checked: boolean = false;
@@ -49,7 +48,7 @@ export class CategoryFilterComponent implements OnInit {
       if (existingTypeInParams && !checked) {
         this.activeParams.categories = this.activeParams.categories.filter(item => item !== url);
       } else if (!existingTypeInParams && checked) {
-         this.activeParams.categories.push(url);
+        this.activeParams.categories.push(url);
         this.activeParams.categories = [...this.activeParams.categories, url];
       }
     } else if (checked) {
@@ -61,6 +60,5 @@ export class CategoryFilterComponent implements OnInit {
       queryParams: this.activeParams
     });
   }
-
 }
 

@@ -1,23 +1,21 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {map, Observable, pipe} from "rxjs";
 import {CategoryType} from "../../../types/category.type";
 import {environment} from "../../../environments/environment";
-import {TypeType} from "../../../types/type.type";
 import {CategoryWithTypeType} from "../../../types/category-with-type.type";
-import {ArticleType} from "../../../types/article.type";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
-
-getCategories(): Observable<CategoryType[]> {
-  return this.http.get<CategoryType[]>(environment.api + 'categories');
-}
+  getCategories(): Observable<CategoryType[]> {
+    return this.http.get<CategoryType[]>(environment.api + 'categories');
+  }
 
   getCategoriesWithFilter(): Observable<CategoryWithTypeType[]> {
     return this.http.get<CategoryType[]>(environment.api + 'categories')

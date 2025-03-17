@@ -14,7 +14,7 @@ import {Subscription} from "rxjs";
   templateUrl: './comment.component.html',
   styleUrls: ['./comment.component.scss']
 })
-export class CommentComponent implements OnInit, OnDestroy  {
+export class CommentComponent implements OnInit, OnDestroy {
 
   action: string = '';
 
@@ -35,43 +35,31 @@ export class CommentComponent implements OnInit, OnDestroy  {
               private articleService: ArticleService,
               private activatedRoute: ActivatedRoute,) {
   }
+
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-
-    // this.activatedRoute.params.subscribe(params => {
-    //   this.articleService.getArticle(params['url'])
-    //     .subscribe((data: ArticleType) => {
-    //       if (data.comments) {
-    //         // this.article у меня здесь undefined
-    //         this.article.comments = data.comments as CommentType[];
-    //         this.noComments = true;
-    //       } else {
-    //         this.noComments = false;
-    //       }
-    //     });
-    // });
   }
+
   updateCount(value: number, action: string) {
     if (this.authService.getIsLoggedIn()) {
       this.likesCount = value;
       this.action = action;
       if (this.likesCount && this.comment) {
-            this.commentService.applyAction(this.comment.id, this.action)
-              .subscribe((data: DefaultResponseType) => {
-                if ((data as DefaultResponseType).error !== undefined) {
-                  throw new Error((data as DefaultResponseType).message);
-                }
-                return this.action;
-              });
-          }
+        this.commentService.applyAction(this.comment.id, this.action)
+          .subscribe((data: DefaultResponseType) => {
+            if ((data as DefaultResponseType).error !== undefined) {
+              throw new Error((data as DefaultResponseType).message);
+            }
+            return this.action;
+          });
       }
     }
+  }
 
   protected readonly EActions = EActions;
 
   ngOnDestroy() {
     this.subscription?.unsubscribe()
   }
-
 }

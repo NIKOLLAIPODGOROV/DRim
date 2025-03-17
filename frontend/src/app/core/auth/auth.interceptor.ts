@@ -5,7 +5,6 @@ import {Router} from "@angular/router";
 import {AuthService} from "./auth.service";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {LoginResponseType} from "../../../types/login-response.type";
-// import {LoaderService} from "../../shared/services/loader.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -31,13 +30,12 @@ export class AuthInterceptor implements HttpInterceptor {
             }
             return throwError(() => error);
           }),
-          // finalize(() => this.loaderService.hide())
         );
     }
 
     return next.handle(req)
       .pipe(
-        // finalize(() => this.loaderService.hide())
+
       );
   }
 
@@ -73,6 +71,5 @@ export class AuthInterceptor implements HttpInterceptor {
           return throwError(() => error);
         })
       );
-
   }
 }

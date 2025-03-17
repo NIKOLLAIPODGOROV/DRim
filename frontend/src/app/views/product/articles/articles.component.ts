@@ -5,11 +5,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {ActiveParamsUtils} from "../../../shared/utils/active-params.utils";
 import {AppliedFilterType} from "../../../../types/applied-filter.type";
 import {debounceTime, Subscription,} from "rxjs";
-
-import {DefaultResponseType} from "../../../../types/default-response.type";
 import {AuthService} from "../../../core/auth/auth.service";
 import {ArticleService} from "../../../shared/services/article.service";
-import {BestArticlesService} from "../../../shared/services/best-articles.service";
 import {ArticleType} from "../../../../types/article.type";
 import {CategoryType} from "../../../../types/category.type";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
@@ -41,7 +38,6 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   constructor(private articleService: ArticleService,
               private categoryService: CategoryService,
               private activatedRoute: ActivatedRoute,
-              private bestArticlesService: BestArticlesService,
               private authService: AuthService,
               private router: Router) {
   }

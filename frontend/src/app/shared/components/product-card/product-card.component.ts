@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {environment} from "../../../../environments/environment";
 import {ArticleType} from "../../../../types/article.type";
 import {CategoryType} from "../../../../types/category.type";
@@ -8,7 +8,7 @@ import {CategoryType} from "../../../../types/category.type";
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.scss']
 })
-export class ProductCardComponent implements OnInit {
+export class ProductCardComponent {
 
   @Input() categories: CategoryType[] = [];
   @Input() category!: CategoryType;
@@ -17,8 +17,5 @@ export class ProductCardComponent implements OnInit {
   serverStaticPath = environment.serverStaticPath;
 
   constructor() {
-  }
-
-  ngOnInit(): void {
   }
 }

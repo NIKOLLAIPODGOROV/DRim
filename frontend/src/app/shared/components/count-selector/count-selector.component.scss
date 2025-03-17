@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: flex-start;
 
- .comment{
+  .comment {
     display: flex;
     align-items: center;
     margin-right: 15px;
@@ -21,13 +21,4 @@
       cursor: pointer;
     }
   }
-
-  .comment-dislike {
-
-    .counter-dislike {}
-
-    .reaction-dislike {}
-  }
-
-  .comment-sign {}
 }
