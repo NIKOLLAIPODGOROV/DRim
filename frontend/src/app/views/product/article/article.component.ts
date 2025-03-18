@@ -11,6 +11,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
 import {CommentActionType} from "../../../../types/comment-action.type";
+import {error} from "@angular/compiler-cli/src/transformers/util";
+import * as url from "url";
+import {getXHRResponse} from "rxjs/internal/ajax/getXHRResponse";
 
 
 @Component({
@@ -22,10 +25,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
-   comments: CommentType[] = [];
-   comment: CommentType | null = null;
+  comments: CommentType[] = [];
+  comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
-  @Input() offset: number | null = null;
+  @Input() offset: number | null = 3;
   @Input() allCounts: number[] = [];
   @Input() text!: string;
   @Input() action: string = '';
@@ -41,7 +44,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   textForm = this.fb.group({
-    text: ['', Validators.required]
+    text: ['']
   });
 
   constructor(private articleService: ArticleService,
@@ -57,38 +60,40 @@ export class ArticleComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    // this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
-    //   this.isLogged = isLoggedIn;
     this.activatedRoute.params.subscribe(params => {
-      this.subscription = this.articleService.getArticle(params['url'])
-        .subscribe(data => {
-          this.article = data as ArticleType;
-          // if (this.hasComments) {
-          //   this.noComments = true;
-          // }
+      this.articleService.getArticle(params['url'])
+        .subscribe( data  => {
 
-           this.articleService.getRelatedArticles(this.article.url)
+          this.article = data as ArticleType;
+          if (this.hasComments) {
+            this.noComments = true;
+          }
+          this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
               this.relatedArticles = data;
             });
-
-          if (this.offset && this.offset > 0) {
-            this.subscription = this.commentService.getComments(3, this.article.id)
-              .subscribe(data => {
-                this.allCounts = [];
-                for (let i = 1; i <= data.allCounts; i++) {
-                  this.allCounts.push(i);
-                }
-                if (this.hasComments) {
-                  this.noComments = true;
-                }
-                this.comments = data.comments as CommentType[];
-              });
+          if (!data) {
+            this.router.navigate(['/articles']);
           }
+
+          // if (this.offset && this.offset > 0) {
+          // this.subscription = this.commentService.getComments(3, this.article.id)
+          //   .subscribe(data => {
+          //     this.allCounts = [];
+          //     for (let i = 1; i <= data.allCounts; i++) {
+          //       this.allCounts.push(i);
+          //     }
+          //     if (this.hasComments) {
+          //       this.noComments = true;
+          //     }
+          //     this.comments = data.comments as CommentType[];
+          //   });
+       // }
+
           if (data.comments) {
             this.comments = data.comments as CommentType[];
 
-             this.commentService.getArticleCommentActions(this.article.id)
+            this.commentService.getArticleCommentActions(this.article.id)
               .subscribe((data: DefaultResponseType | CommentActionType[]) => {
                 if ((data as DefaultResponseType).error !== undefined) {
                   throw new Error(((data as DefaultResponseType).message));
@@ -103,28 +108,33 @@ export class ArticleComponent implements OnInit, OnDestroy {
                     userLiked: userAction?.action === 'like', // Был ли лайкнут
                     userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
                   };
-
                 });
-
               });
-            if (this.comments) {
-              this.article.comments = this.comments;
-            }
-
           }
 
+          this.commentService.getComments(3, this.article.id)
+            .subscribe(data => {
+             if (this.allCounts === []) {
+               return
+             }
+              this.allCounts = [];
+              for (let i = 1; i <= data.allCounts; i++) {
+                this.allCounts.push(i);
+              }
+              this.comments = data.comments as CommentType[];
+            });
+
+          this.article.comments = this.comments
+          console.log(this.article.comments);
+          return this.article;
         });
-    });
-    // });
+        });
   }
-
-
-
 
   addComment() {
     if (this.isLogged) {
       if (this.article && this.textForm.valid && this.textForm.value.text) {
-       this.commentService.addComment(this.textForm.value.text, this.article.id)
+        this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
               if ((data as DefaultResponseType).error !== undefined) {
@@ -132,6 +142,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
               }
               this._snackBar.open('Комментарий добавлен');
             },
+
             error: (errorResponse: HttpErrorResponse) => {
               if (errorResponse.error && errorResponse.error.message) {
                 this._snackBar.open(errorResponse.error.message);
@@ -148,17 +159,17 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
     }
 
-    this.commentService.getComments(3, this.article.id)
-      .subscribe(data => {
-        this.allCounts = [];
-        for (let i = 1; i <= data.allCounts; i++) {
-          this.allCounts.push(i);
-        }
-        this.comments = data.comments as CommentType[];
-      });
-
-     console.log(this.comments);
-  }
+  //   this.commentService.getComments(3, this.article.id)
+  //     .subscribe(data => {
+  //       this.allCounts = [];
+  //       for (let i = 1; i <= data.allCounts; i++) {
+  //         this.allCounts.push(i);
+  //       }
+  //       this.comments = data.comments as CommentType[];
+  //     });
+  //
+  //   console.log(this.comments);
+   }
 
   ngOnDestroy() {
     this.subscription?.unsubscribe()

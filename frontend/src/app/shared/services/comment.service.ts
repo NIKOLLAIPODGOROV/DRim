@@ -15,7 +15,7 @@ export class CommentService {
   }
 
   getComments(offset: number | null, article: string): Observable<{ allCounts: number, comments: CommentType[] }> {
-    return this.http.get<{ allCounts: number, comments: CommentType[] }>(environment.api + 'comments');
+    return this.http.get<{ allCounts: number, comments: CommentType[] }>(environment.api + 'comments?offset='+ offset + '&article=' + article);
   }
 
   addComment(text: string, article: string): Observable<DefaultResponseType> {
