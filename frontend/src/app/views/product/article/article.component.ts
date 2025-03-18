@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ArticleType} from "../../../../types/article.type";
 import {ArticleService} from "../../../shared/services/article.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
@@ -25,14 +25,14 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
-  comments: CommentType[] = [];
-  comment: CommentType | null = null;
+  @Input()comments: CommentType[] = [];
+  @Input()comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
   @Input() offset: number | null = 3;
-  @Input() allCounts: number[] = [];
+  @Output() allCounts: number[] = [];
   @Input() text!: string;
   @Input() action: string = '';
-  commentAction: CommentActionType[] = [];
+  @Output() commentAction: CommentActionType[] = [];
 
   likesCount: number | null = null;
   dislikesCount: number | null = null;
@@ -62,19 +62,19 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
-        .subscribe( data  => {
+
+        .subscribe(data => {
 
           this.article = data as ArticleType;
+
           if (this.hasComments) {
             this.noComments = true;
           }
+
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
               this.relatedArticles = data;
             });
-          if (!data) {
-            this.router.navigate(['/articles']);
-          }
 
           // if (this.offset && this.offset > 0) {
           // this.subscription = this.commentService.getComments(3, this.article.id)
@@ -88,7 +88,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
           //     }
           //     this.comments = data.comments as CommentType[];
           //   });
-       // }
+          // }
 
           if (data.comments) {
             this.comments = data.comments as CommentType[];
@@ -109,30 +109,37 @@ export class ArticleComponent implements OnInit, OnDestroy {
                     userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
                   };
                 });
+                // return this.comments;
               });
+
+
+            if (this.offset && this.offset > 0) {
+              this.subscription = this.commentService.getComments(3, this.article.id)
+                .subscribe(data => {
+                  this.allCounts = [];
+                  for (let i = 1; i <= data.allCounts; i++) {
+                    this.allCounts.push(i);
+                  }
+                  if (this.hasComments) {
+                    this.noComments = true;
+                  }
+                  this.comments = data.comments as CommentType[];
+                });
+
+            }
+
           }
 
-          this.commentService.getComments(3, this.article.id)
-            .subscribe(data => {
-             if (this.allCounts === []) {
-               return
-             }
-              this.allCounts = [];
-              for (let i = 1; i <= data.allCounts; i++) {
-                this.allCounts.push(i);
-              }
-              this.comments = data.comments as CommentType[];
-            });
-
-          this.article.comments = this.comments
-          console.log(this.article.comments);
-          return this.article;
+          console.log(this.comments);
         });
-        });
+    });
   }
 
   addComment() {
-    if (this.isLogged) {
+    if (!this.authService.getIsLoggedIn()) {
+      this._snackBar.open('Для добавление коментария необходимо авторизоваться');
+      return;
+    }
       if (this.article && this.textForm.valid && this.textForm.value.text) {
         this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
@@ -157,19 +164,17 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this._snackBar.open('Заполните необходимые поля');
       }
 
-    }
+    this.commentService.getComments(0, this.article.id)
+      .subscribe(data => {
+        this.allCounts = [];
+        for (let i = 1; i <= data.allCounts; i++) {
+          this.allCounts.push(i);
+        }
+        this.comments = data.comments as CommentType[];
+      });
 
-  //   this.commentService.getComments(3, this.article.id)
-  //     .subscribe(data => {
-  //       this.allCounts = [];
-  //       for (let i = 1; i <= data.allCounts; i++) {
-  //         this.allCounts.push(i);
-  //       }
-  //       this.comments = data.comments as CommentType[];
-  //     });
-  //
-  //   console.log(this.comments);
-   }
+    this.textForm.reset();
+  }
 
   ngOnDestroy() {
     this.subscription?.unsubscribe()
