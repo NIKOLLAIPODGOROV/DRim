@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.isLogged = isLoggedIn;
     });
 
-    this.subscription = this.userService.getUserInfo()
+    this.userService.getUserInfo()
       .subscribe((data: UserInfoType | DefaultResponseType) => {
         if ((data as DefaultResponseType).error !== undefined) {
           throw new Error((data as DefaultResponseType).message);

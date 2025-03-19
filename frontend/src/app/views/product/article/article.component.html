@@ -164,7 +164,7 @@
             Чтобы оставлять комментарии, <span routerLink="/login">войдите</span> или <span routerLink="/signup">зарегистрируйтесь.</span>
           </div>
 
-          <div *ngIf="noComments && isLogged" class="comments-enter extra-text">
+          <div *ngIf="noComments && !isLogged" class="comments-enter extra-text">
             Будьте первым, кто оставит свой комментарий к статье!
           </div>
           <form class="field-for-comments" [formGroup]="textForm" *ngIf="isLogged">
@@ -178,14 +178,14 @@
           </form>
 
           <div class="comments-items">
-            <div class="comments-item">
-              <ng-container *ngFor="let comment of comments">
-                <comment [comments]="comments"></comment>
-              </ng-container>
+            <div class="comments-item" *ngFor="let comment of comments">
+             <ng-container >
+                <comment [comment]="comment"></comment>
+             </ng-container>
             </div>
           </div>
         </div>
-        <div *ngIf="noComments" class="extra-comments">
+        <div *ngIf="!noComments && this.comments.length > 3" class="extra-comments">
           <div class="extra-comments-text">
             Загрузить ещё комментарии
           </div>
@@ -205,8 +205,5 @@
         <product-card [article]="article" *ngFor="let article of relatedArticles"></product-card>
       </div>
     </div>
-    <!--    <div *ngIf="!noComments" class="extra-info">-->
-    <!--      <div class="extra-info-title">Читайте также:</div>-->
-    <!--    </div>-->
   </div>
 </section>

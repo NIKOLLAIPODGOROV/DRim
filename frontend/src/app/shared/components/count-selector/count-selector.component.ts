@@ -11,9 +11,11 @@ export class CountSelectorComponent {
 
   action: string = '';
   @Input() dislikesCount: number = 0;
-  @Output() likesCount: number = 0;
-  @Input() countLike: string = 'like';
-  @Input() countDislike: string = 'dislike';
+  @Input() likesCount: number = 0;
+  // @Input() countLike: string = 'like';
+  // @Input() countDislike: string = 'dislike';
+  @Input()comments: CommentType[] = [];
+  @Input()comment: CommentType | null = null;
 
   isLoggedIn: boolean = false;
   @Output() onCountLikesChange: EventEmitter<number> = new EventEmitter<number>();

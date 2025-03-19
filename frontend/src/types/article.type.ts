@@ -3,7 +3,7 @@ import {CommentType} from "./comment.type";
 export type ArticleType = {
 text?: string,
   comments?: CommentType[],
-  commentsCount?: string,
+  commentsCount?: number,
       id: string,
       title?: string,
       description?: string,

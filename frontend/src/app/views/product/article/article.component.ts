@@ -6,15 +6,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../core/auth/auth.service";
 import {CommentType} from "../../../../types/comment.type";
 import {CommentService} from "../../../shared/services/comment.service";
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
 import {CommentActionType} from "../../../../types/comment-action.type";
-import {error} from "@angular/compiler-cli/src/transformers/util";
-import * as url from "url";
-import {getXHRResponse} from "rxjs/internal/ajax/getXHRResponse";
-
 
 @Component({
   selector: 'article',
@@ -29,13 +25,13 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input()comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
   @Input() offset: number | null = 3;
-  @Output() allCounts: number[] = [];
+  allCounts: number[] = [];
   @Input() text!: string;
   @Input() action: string = '';
   @Output() commentAction: CommentActionType[] = [];
 
-  likesCount: number | null = null;
-  dislikesCount: number | null = null;
+  likesCount: number = 0;
+  dislikesCount: number = 0;
   isLogged: boolean = false;
   noComments: boolean = false;
 
@@ -62,9 +58,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
-
         .subscribe(data => {
-
           this.article = data as ArticleType;
 
           if (this.hasComments) {
@@ -76,26 +70,12 @@ export class ArticleComponent implements OnInit, OnDestroy {
               this.relatedArticles = data;
             });
 
-          // if (this.offset && this.offset > 0) {
-          // this.subscription = this.commentService.getComments(3, this.article.id)
-          //   .subscribe(data => {
-          //     this.allCounts = [];
-          //     for (let i = 1; i <= data.allCounts; i++) {
-          //       this.allCounts.push(i);
-          //     }
-          //     if (this.hasComments) {
-          //       this.noComments = true;
-          //     }
-          //     this.comments = data.comments as CommentType[];
-          //   });
-          // }
-
           if (data.comments) {
             this.comments = data.comments as CommentType[];
 
             this.commentService.getArticleCommentActions(this.article.id)
               .subscribe((data: DefaultResponseType | CommentActionType[]) => {
-                if ((data as DefaultResponseType).error !== undefined) {
+                if ((data as DefaultResponseType).error) {
                   throw new Error(((data as DefaultResponseType).message));
                 }
                 //здесь нужно сохранить данные о действиях и соотнести их с данными о коментариях по id
@@ -111,10 +91,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 });
                 // return this.comments;
               });
-
+          }
 
             if (this.offset && this.offset > 0) {
-              this.subscription = this.commentService.getComments(3, this.article.id)
+              this.subscription = this.commentService.getComments(this.offset, this.article.id)
                 .subscribe(data => {
                   this.allCounts = [];
                   for (let i = 1; i <= data.allCounts; i++) {
@@ -124,13 +104,20 @@ export class ArticleComponent implements OnInit, OnDestroy {
                     this.noComments = true;
                   }
                   this.comments = data.comments as CommentType[];
-                });
+                 return this.article.comments;
 
+                });
             }
 
-          }
+          // if (this.article.comments && this.article.commentsCount && this.article.commentsCount >= 3)  {
+          //   for (let i = 0; i < this.article.comments.length ; i++) {
+          //     if (i <= 3) {
+          //       return this.article.comments[i];
+          //     }
+          //   }
+          // }
 
-          console.log(this.comments);
+           // return this.article.comments;
         });
     });
   }
@@ -144,9 +131,11 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this.commentService.addComment(this.textForm.value.text, this.article.id)
           .subscribe({
             next: (data: DefaultResponseType) => {
-              if ((data as DefaultResponseType).error !== undefined) {
+              if ((data as DefaultResponseType).error) {
                 throw new Error(((data as DefaultResponseType).message));
               }
+              this.textForm.reset();
+              this.noComments = true;
               this._snackBar.open('Комментарий добавлен');
             },
 
@@ -164,16 +153,19 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this._snackBar.open('Заполните необходимые поля');
       }
 
-    this.commentService.getComments(0, this.article.id)
+    this.commentService.getComments(this.offset, this.article.id)
       .subscribe(data => {
         this.allCounts = [];
         for (let i = 1; i <= data.allCounts; i++) {
           this.allCounts.push(i);
         }
+        if (this.hasComments) {
+          this.noComments = true;
+        }
         this.comments = data.comments as CommentType[];
       });
 
-    this.textForm.reset();
+   // return this.article.comments;
   }
 
   ngOnDestroy() {

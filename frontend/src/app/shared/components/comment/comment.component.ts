@@ -21,7 +21,7 @@ export class CommentComponent implements OnDestroy {
   @Input() countLike: string = '';
   @Input() countDislike: string = '';
   @Input() comments: CommentType[] = [];
-  @Input() comment: CommentType | null = null;
+  @Input() comment!: CommentType;
   @Output() commentAction: CommentActionType[] = [];
   isLoggedIn: boolean = false;
 
@@ -33,7 +33,6 @@ export class CommentComponent implements OnDestroy {
   private subscription: Subscription | null = null;
 
   updateCount(value: number, action: string) {
-   // if (this.authService.getIsLoggedIn()) {
       this.likesCount = value;
       this.action = action;
       if (this.likesCount && this.comment) {
@@ -42,11 +41,12 @@ export class CommentComponent implements OnDestroy {
             if ((data as DefaultResponseType).error !== undefined) {
               throw new Error((data as DefaultResponseType).message);
             }
-          // return this.action;
+           return this.action;
           });
       }
-    return this.action;
-   // }
+      if (this.dislikesCount) {
+        this.dislikesCount++
+      }
   }
 
   ngOnDestroy() {
