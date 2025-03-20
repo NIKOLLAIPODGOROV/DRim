@@ -73,7 +73,7 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
     this.categoryService.getCategoriesWithFilter()
       .subscribe(data => {
         this.categoriesWithType = data as CategoryWithTypeType[];
-        console.log(data);
+       // console.log(data);
       })
 
     this.activatedRoute.queryParams

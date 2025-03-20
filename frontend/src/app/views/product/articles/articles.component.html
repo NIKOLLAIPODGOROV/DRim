@@ -47,7 +47,7 @@
           </div>
           <div class="articles-filter-body">
             <div class="articles-filter-item" *ngFor="let category of categories">{{category.name}}
-              <input type="checkbox" #input
+              <input class="checkbox" type="checkbox" #input
                      [checked]="activeParams.categories.includes(category.url)"
                      (change)="updateFilterParam(category.url, input.checked)">
 <!--              <svg *ngIf="!isActive" width="12" height="11" viewBox="0 0 12 11" fill="none"-->

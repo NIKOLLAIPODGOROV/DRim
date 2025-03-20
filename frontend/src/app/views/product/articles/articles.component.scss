@@ -47,10 +47,10 @@
         min-width: 257px;
         margin-right: -58px;
 
-
       .articles-filter {
         width: 190px;
         min-width: 190px;
+        margin-right: 0;
         box-sizing: border-box;
         position: relative;
         font-size: 16px;
@@ -72,13 +72,16 @@
         .articles-filter-body {
           position: absolute;
           width: 100%;
+         // margin-right: 8px;
           box-sizing: border-box;
+          border: 1.5px solid #B9D5FD;
           z-index: 3;
           display: none;
           padding: 12px 23px;
           background: #FFFFFF;
           border-radius: 0 0 5px 5px;
           color: #BEBEBE;
+
 
           .articles-filter-item {
             display: flex;
@@ -99,6 +102,7 @@
         &.open {
           width: 257px;
           min-width: 257px;
+
           .articles-filter-head {
             color: $gray-text-color;
             background: $blue-light-text-color;

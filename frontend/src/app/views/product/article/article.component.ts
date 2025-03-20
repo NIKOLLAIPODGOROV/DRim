@@ -34,10 +34,15 @@ export class ArticleComponent implements OnInit, OnDestroy {
   dislikesCount: number = 0;
   isLogged: boolean = false;
   noComments: boolean = false;
+  moreThreeComments: boolean = false
 
   get hasComments() {
     return this.comments.length > 0;
   }
+
+get hasMoreThreeComments() {
+  return this.comments.length > 3;
+}
 
   textForm = this.fb.group({
     text: ['']
@@ -64,6 +69,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
           if (this.hasComments) {
             this.noComments = true;
           }
+          if (this.hasMoreThreeComments) {
+            this.moreThreeComments = true;
+          }
+
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
@@ -93,31 +102,24 @@ export class ArticleComponent implements OnInit, OnDestroy {
               });
           }
 
-            if (this.offset && this.offset > 0) {
-              this.subscription = this.commentService.getComments(this.offset, this.article.id)
-                .subscribe(data => {
-                  this.allCounts = [];
-                  for (let i = 1; i <= data.allCounts; i++) {
-                    this.allCounts.push(i);
-                  }
-                  if (this.hasComments) {
-                    this.noComments = true;
-                  }
-                  this.comments = data.comments as CommentType[];
-                 return this.article.comments;
+           // if (this.offset && this.offset > 0) {
+           //    this.subscription = this.commentService.getComments(3, this.article.id)
+           //      .subscribe(data => {
+           //        this.allCounts = [];
+           //        for (let i = 1; i <= data.allCounts; i++) {
+           //          this.allCounts.push(i);
+           //        }
+           //        if (this.hasComments) {
+           //          this.noComments = true;
+           //        }
+           //        this.comments = data.comments as CommentType[];
 
-                });
-            }
+           //      // return this.article.comments;
+           //
+           //      });
+            //}
 
-          // if (this.article.comments && this.article.commentsCount && this.article.commentsCount >= 3)  {
-          //   for (let i = 0; i < this.article.comments.length ; i++) {
-          //     if (i <= 3) {
-          //       return this.article.comments[i];
-          //     }
-          //   }
-          // }
-
-           // return this.article.comments;
+            return this.article.comments;
         });
     });
   }
@@ -153,7 +155,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this._snackBar.open('Заполните необходимые поля');
       }
 
-    this.commentService.getComments(this.offset, this.article.id)
+    this.commentService.getComments(0, this.article.id)
       .subscribe(data => {
         this.allCounts = [];
         for (let i = 1; i <= data.allCounts; i++) {
