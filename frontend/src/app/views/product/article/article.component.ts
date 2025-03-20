@@ -30,18 +30,18 @@ export class ArticleComponent implements OnInit, OnDestroy {
   @Input() action: string = '';
   @Output() commentAction: CommentActionType[] = [];
 
+  commentsPerPage = 3;
+
   likesCount: number = 0;
   dislikesCount: number = 0;
   isLogged: boolean = false;
-  noComments: boolean = false;
-  moreThreeComments: boolean = false
 
   get hasComments() {
     return this.comments.length > 0;
   }
 
 get hasMoreThreeComments() {
-  return this.comments.length > 3;
+  return this.comments.length > this.commentsPerPage;
 }
 
   textForm = this.fb.group({
@@ -66,13 +66,9 @@ get hasMoreThreeComments() {
         .subscribe(data => {
           this.article = data as ArticleType;
 
-          if (this.hasComments) {
-            this.noComments = true;
-          }
-          if (this.hasMoreThreeComments) {
-            this.moreThreeComments = true;
-          }
+          this.hasComments;
 
+            this.hasMoreThreeComments;
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
@@ -137,7 +133,7 @@ get hasMoreThreeComments() {
                 throw new Error(((data as DefaultResponseType).message));
               }
               this.textForm.reset();
-              this.noComments = true;
+              this.hasComments;
               this._snackBar.open('Комментарий добавлен');
             },
 
@@ -150,7 +146,7 @@ get hasMoreThreeComments() {
             }
           });
       } else {
-        this.noComments = false;
+        !this.hasComments;
         this.textForm.markAllAsTouched();
         this._snackBar.open('Заполните необходимые поля');
       }
@@ -161,9 +157,8 @@ get hasMoreThreeComments() {
         for (let i = 1; i <= data.allCounts; i++) {
           this.allCounts.push(i);
         }
-        if (this.hasComments) {
-          this.noComments = true;
-        }
+          this.hasComments;
+
         this.comments = data.comments as CommentType[];
       });
 
