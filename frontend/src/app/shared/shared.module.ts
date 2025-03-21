@@ -24,7 +24,7 @@ import {MatDialogModule} from "@angular/material/dialog";
     ReactiveFormsModule,
     MatDialogModule,
   ],
-  exports: [ProductCardComponent, CategoryFilterComponent, CommentComponent, CountSelectorComponent],
+  exports: [ProductCardComponent, CategoryFilterComponent, CommentComponent, CountSelectorComponent,],
 })
 export class SharedModule {
 }

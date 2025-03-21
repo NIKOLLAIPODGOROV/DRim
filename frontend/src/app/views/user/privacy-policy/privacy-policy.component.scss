@@ -1,0 +1,32 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+@import "../../../../assets/styles/global";
+
+.article {
+  padding-top: 80px;
+  padding-bottom: 120px;
+
+  .container {
+    width: 1400px;
+
+    .main-title {
+      font-size: 32px;
+      font-weight: 600;
+    }
+
+    ol {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      list-style: none;
+      counter-reset: li;
+    }
+
+    li:before {
+      counter-increment: li;
+      content: counters(li, ".") ". ";
+      color: #071739;
+    }
+
+  }
+}
