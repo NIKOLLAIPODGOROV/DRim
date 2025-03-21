@@ -29,6 +29,17 @@
         }
       }
 
+      .main-button {
+        display: flex;
+        top: calc(50% + 101px);
+        left: 80px;
+        width: 163px;
+        font-size: 16px;
+        height: 51px;
+        position: absolute;
+        z-index: 10;
+      }
+
       .main-arrows {
         display: flex;
 

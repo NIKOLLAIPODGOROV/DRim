@@ -7,6 +7,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {UserInfoType} from "../../../../types/user-info.type";
 import {UserService} from "../../services/user.service";
 import {Subscription} from "rxjs";
+import {style} from "@angular/animations";
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,7 @@ import {Subscription} from "rxjs";
 export class HeaderComponent implements OnInit, OnDestroy {
 
   isLogged: boolean = false;
-  user!: UserInfoType;
+  user: UserInfoType | null = null;
 
   constructor(private authService: AuthService,
               private _snackBar: MatSnackBar,
@@ -39,9 +40,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
           throw new Error((data as DefaultResponseType).message);
         }
         if (this.isLogged) {
-          this.user = data as UserInfoType;
+          this.user = data as UserInfoType | null;
+        } else {
+          this.user = null;
         }
-        console.log(this.user.name);
+
+       // console.log(this.user.name);
       });
   }
 
@@ -61,8 +65,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   doLogout(): void {
     this.authService.removeTokens();
     this.authService.userId = null;
-    this.isLogged = false;
-    this._snackBar.open('Разлогинен успешно');
+    this._snackBar.open('Вы вышли из системы');
     this.router.navigate(['/']);
   }
 

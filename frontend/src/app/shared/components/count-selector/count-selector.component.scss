@@ -18,7 +18,12 @@
     }
 
     .reaction {
-      cursor: pointer;
+      svg {
+        cursor: pointer;
+        &:active {
+          -webkit-text-stroke-color: blue;
+        }
+      }
     }
   }
 }

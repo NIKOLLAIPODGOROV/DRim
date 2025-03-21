@@ -12,6 +12,8 @@ import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject, Subscription, takeUntil} from "rxjs";
+import {ServeNameType} from "../../../types/serve-name.type";
+import {ServeNameUtils} from "../../shared/utils/serve-name.utils";
 
 @Component({
   selector: 'app-main',
@@ -125,6 +127,9 @@ export class MainComponent implements OnInit, OnDestroy {
     },
   ];
 
+serveNameType: string = ServeNameUtils.name;
+
+serveName: string = 'Услуга';
 
   callForm = this.fb.group({
     service: ['', Validators.required],
