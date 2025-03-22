@@ -63,7 +63,7 @@
             От 1500Р
           </div>
           <div class="our-offers-action">
-            <button class="button"  (click)="call()">Подробнее</button>
+            <button class="button"  (click)="call('Создание сайтов')">Подробнее</button>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@
             От 3500Р
           </div>
           <div class="our-offers-action">
-            <button class="button" (click)="call()">Подробнее</button>
+            <button class="button" (click)="call('Продвижение')">Подробнее</button>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@
             От 1000Р
           </div>
           <div class="our-offers-action">
-            <button class="button" (click)="call()">Подробнее</button>
+            <button class="button" (click)="call('Реклама')">Подробнее</button>
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@
             От 750Р
           </div>
           <div class="our-offers-action">
-            <button class="button" (click)="call()">Подробнее</button>
+            <button class="button" (click)="call('Копирайтинг')">Подробнее</button>
           </div>
         </div>
       </div>
@@ -383,6 +383,7 @@
         <button class="button" *ngIf="!isFormEmpty" [disabled]="callForm.invalid" (click)="createAuthRequest()">Оставить заявку</button>
         <button class="button ok" *ngIf="isFormEmpty" (click)="closePopup()">Окей</button>
       </div>
+      <span *ngIf="requestError">произошла ошибка при отправке формы, попробуйте еще раз.”</span>
     </div>
   </div>
 </ng-template>

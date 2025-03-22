@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CommentType} from "../../../../types/comment.type";
-import {CommentService} from "../../services/comment.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'count-selector',
@@ -12,16 +12,19 @@ export class CountSelectorComponent {
   action: string = '';
   @Input() dislikesCount: number = 0;
   @Input() likesCount: number = 0;
-  // @Input() countLike: string = 'like';
-  // @Input() countDislike: string = 'dislike';
+  @Input() violatesCount: number = 0;
+
   @Input()comments: CommentType[] = [];
   @Input()comment: CommentType | null = null;
 
-  isLoggedIn: boolean = false;
+  isActive: boolean = false;
   @Output() onCountLikesChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() onCountDislikesChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onCountViolatesChange: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor() {
+
+
+  constructor(private _snackBar: MatSnackBar) {
   }
 
   countChangeLike() {
@@ -32,15 +35,36 @@ export class CountSelectorComponent {
     this.onCountDislikesChange.emit(this.dislikesCount);
   }
 
-  dislikeCount() {
+  countChangeViolate() {
+    this.onCountViolatesChange.emit(this.violatesCount);
+  }
+
+  dislikeCount(isActive: boolean) {
+    if (this.likesCount > 0 && !isActive) {
+      this.likesCount--;
+    }
     this.dislikesCount++;
     this.action = 'dislike';
     this.countChangeDisLike();
+    this._snackBar.open('Ваш голос учтен');
   }
 
-  likeCount() {
+  likeCount(isActive: boolean) {
+    this.isActive = true;
+    if (this.dislikesCount > 0 && !isActive) {
+      this.dislikesCount--;
+    }
     this.likesCount++;
     this.action = 'like';
     this.countChangeLike();
+    this._snackBar.open('Ваш голос учтен');
   }
+
+  violateCount() {
+    this.violatesCount++;
+    this.action = 'violate';
+    this.countChangeViolate();
+    this._snackBar.open('Жалоба отправлена');
+  }
+
 }

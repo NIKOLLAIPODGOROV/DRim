@@ -12,8 +12,6 @@ import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject, Subscription, takeUntil} from "rxjs";
-import {ServeNameType} from "../../../types/serve-name.type";
-import {ServeNameUtils} from "../../shared/utils/serve-name.utils";
 
 @Component({
   selector: 'app-main',
@@ -24,10 +22,11 @@ import {ServeNameUtils} from "../../shared/utils/serve-name.utils";
 export class MainComponent implements OnInit, OnDestroy {
 
   isFormEmpty: boolean = false;
-  @Input() popularArticles: ArticleType[] = [];
-  @Input() article!: ArticleType;
-  @Input() type!: string;
+  popularArticles: ArticleType[] = [];
+  article!: ArticleType;
+  type!: string;
   articles: ArticleType[] = [];
+  requestError: boolean = false;
 
   customOptions: OwlOptions = {
     loop: true,
@@ -127,14 +126,10 @@ export class MainComponent implements OnInit, OnDestroy {
     },
   ];
 
-serveNameType: string = ServeNameUtils.name;
-
-serveName: string = 'Услуга';
-
   callForm = this.fb.group({
     service: ['', Validators.required],
-    name: ['', Validators.required],
-    phone: ['', Validators.required],
+    name: ['', [Validators.required, Validators.pattern(/^[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[а-яё]+)?)?)?$/)]],
+    phone: ['', [Validators.required, Validators.pattern(/^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/)]],
     type: ['order',],
   });
 
@@ -199,6 +194,7 @@ serveName: string = 'Услуга';
             if (errorResponse.error && errorResponse.error.message) {
               this._snackBar.open(errorResponse.error.message);
             } else {
+              this.requestError = true;
               this._snackBar.open('Ошибка заказа');
             }
           }
@@ -215,12 +211,10 @@ serveName: string = 'Услуга';
     this.router.navigate(['/']);
   }
 
-  call() {
+  call(serviceName?: string) {
+    this.callForm.patchValue({service: serviceName });
     this.dialogRef = this.dialog.open(this.popup);
     this.dialogRef.backdropClick()
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
   }
 
   ngOnDestroy() {

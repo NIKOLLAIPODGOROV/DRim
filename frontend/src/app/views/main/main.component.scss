@@ -38,6 +38,10 @@
         height: 51px;
         position: absolute;
         z-index: 10;
+
+        &:nth-child {
+          top: calc(50% + 114px);
+        }
       }
 
       .main-arrows {

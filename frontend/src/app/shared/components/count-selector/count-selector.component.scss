@@ -15,14 +15,19 @@
       font-weight: 600;
       font-size: 14px;
       margin-right: 3px;
+
+      &.active {
+        color: $blue-text-color;
+      }
     }
 
     .reaction {
       svg {
         cursor: pointer;
-        &:active {
-          -webkit-text-stroke-color: blue;
-        }
+
+      &.active {
+        stroke: $blue-text-color;
+      }
       }
     }
   }

@@ -36,11 +36,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     this.userService.getUserInfo()
       .subscribe((data: UserInfoType | DefaultResponseType) => {
-        if ((data as DefaultResponseType).error !== undefined) {
+        if ((data as DefaultResponseType).error) {
           throw new Error((data as DefaultResponseType).message);
         }
         if (this.isLogged) {
-          this.user = data as UserInfoType | null;
+          this.user = data as UserInfoType;
         } else {
           this.user = null;
         }

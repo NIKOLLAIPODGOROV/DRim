@@ -18,6 +18,7 @@ export class CommentComponent implements OnDestroy {
 
   @Input() likesCount: number | null = null;
   @Input() dislikesCount: number | null = null;
+  @Input() violatesCount: number | null = null;
   @Input() countLike: string = '';
   @Input() countDislike: string = '';
   @Input() comments: CommentType[] = [];
@@ -41,12 +42,15 @@ export class CommentComponent implements OnDestroy {
             if ((data as DefaultResponseType).error !== undefined) {
               throw new Error((data as DefaultResponseType).message);
             }
-           return this.action;
+          // return this.action;
           });
       }
       if (this.dislikesCount) {
         this.dislikesCount++
+      } else if (this.violatesCount){
+        this.violatesCount++;
       }
+    return this.action;
   }
 
   ngOnDestroy() {

@@ -12,7 +12,8 @@
         {{comment?.text}}
       </div>
       <count-selector [dislikesCount]="comment.dislikesCount ?? 0" (onCountDislikesChange)="updateCount($event, EActions.dislike)"
-            [likesCount]="comment.likesCount ?? 0" (onCountLikesChange)="updateCount($event, EActions.like)"></count-selector>
+            [likesCount]="comment.likesCount ?? 0" (onCountLikesChange)="updateCount($event, EActions.like)"
+                      [violatesCount]="comment.violatesCount ?? 0" (onCountViolatesChange)="updateCount($event, EActions.violate)"></count-selector>
     </div>
   </div>
 </div>

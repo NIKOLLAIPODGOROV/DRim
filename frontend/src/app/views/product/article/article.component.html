@@ -164,7 +164,7 @@
             Чтобы оставлять комментарии, <span routerLink="/login">войдите</span> или <span routerLink="/signup">зарегистрируйтесь.</span>
           </div>
 
-          <div *ngIf="!this.hasComments && !isLogged" class="comments-enter extra-text">
+          <div *ngIf="!this.hasComments && isLogged" class="comments-enter extra-text">
             Будьте первым, кто оставит свой комментарий к статье!
           </div>
           <form class="field-for-comments" [formGroup]="textForm" *ngIf="isLogged">

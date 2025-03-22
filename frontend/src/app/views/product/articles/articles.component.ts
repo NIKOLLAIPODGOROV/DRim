@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CategoryService} from "../../../shared/services/category.service";
 import {ActiveParamsType} from "../../../../types/active-params.type";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,6 +10,7 @@ import {ArticleService} from "../../../shared/services/article.service";
 import {ArticleType} from "../../../../types/article.type";
 import {CategoryType} from "../../../../types/category.type";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
+import {style} from "@angular/animations";
 
 @Component({
   selector: 'articles',
@@ -21,18 +22,18 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
 
   articles: ArticleType[] = [];
   categoriesWithType: CategoryWithTypeType[] = [];
-  @Input() categoryWithType: CategoryWithTypeType | null = null;
+  categoryWithType: CategoryWithTypeType | null = null;
   activeParams: ActiveParamsType = {categories: []};
   appliedFilters: AppliedFilterType[] = [];
 
-  @Input()category: string | null = null;
-  @Input() categories: CategoryType[] = [];
+   category: CategoryType | null = null;
+   categories: CategoryType[] = [];
   article!: ArticleType;
 
   type: string | null = null;
   pages: number[] = [];
-  open = false;
-  isActive = false;
+  open: boolean = false;
+  isActive: boolean = false;
   popularArticles: ArticleType[] = [];
 
   constructor(private articleService: ArticleService,
@@ -45,13 +46,14 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
-    this.subscription = this.activatedRoute.params.subscribe(params => {
+    this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticles(params['url'])
         .subscribe(data => {
           this.articles = data.items as ArticleType[];
           this.processCatalog();
         });
     });
+
     this.categoryService.getCategories()
       .subscribe(data => {
         this.categories = data as CategoryType[];
@@ -59,6 +61,15 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.activeParams = ActiveParamsUtils.processParams(params);
+
+      if (this.category && params['categories']) {
+        this.activeParams.categories = Array.isArray(params['categories']) ? params['categories'] : [params['categories']];
+      }
+      if (this.categoryWithType && this.categoryWithType.categories
+        && this.categoryWithType.categories.length > 0 &&
+        this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
+        this.open = true;
+      }
 
       if (this.category) {
         this.open = !!(this.activeParams.categories);
@@ -77,9 +88,9 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
       })
 
     this.activatedRoute.queryParams
-      .pipe(
-        debounceTime(500)
-      )
+      // .pipe(
+      //   debounceTime(500)
+      // )
       .subscribe(params => {
 
         this.activeParams = ActiveParamsUtils.processParams(params);
@@ -138,8 +149,8 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {
-    if (appliedFilter.url) {
-      //  delete this.activeParams[appliedFilter.categories.url];
+    if (appliedFilter.url && this.category?.url === 'dizain' ) {
+       // delete this.activeParams[appliedFilter.url];
     } else {
       this.activeParams.categories = this.activeParams.categories.filter(item => item !== appliedFilter.url);
     }
@@ -179,17 +190,20 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
     this.open = !this.open;
   }
 
-  updateFilterParam(url: string, checked: boolean) {
+  updateFilterParam(url: string, isActive: boolean) {
     if (this.activeParams.categories && this.activeParams.categories.length > 0) {
       const existingTypeInParams = this.activeParams.categories.find(item => item === url);
-      if (existingTypeInParams && !checked) {
+      if (existingTypeInParams && !isActive) {
         this.activeParams.categories = this.activeParams.categories.filter(item => item !== url);
-      } else if (!existingTypeInParams && checked) {
-         this.activeParams.categories.push(url);
+      } else if (!existingTypeInParams && isActive) {
+        this.activeParams.categories.push(url);
         this.activeParams.categories = [...this.activeParams.categories, url];
       }
-    } else if (checked) {
+    } else if (isActive) {
       this.activeParams.categories = [url];
+      this.activeParams.categories = [''];
+    } else {
+      this.activeParams.categories = [''];
     }
 
     this.activeParams.pages = 1;

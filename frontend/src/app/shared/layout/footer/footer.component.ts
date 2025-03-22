@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild,} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, TemplateRef, ViewChild,} from '@angular/core';
 import {CategoryType} from "../../../../types/category.type";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Router} from "@angular/router";
@@ -15,15 +15,15 @@ import {Subscription} from "rxjs";
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit, OnDestroy {
+export class FooterComponent implements OnDestroy {
 
   @Input() categories: CategoryType[] = [];
   @Input() type!: string;
   isFormEmpty = false;
 
   requestForm = this.fb.group({
-    name: ['', Validators.required],
-    phone: ['', Validators.required],
+    name: ['', [Validators.required, Validators.pattern(/^[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[а-яё]+)?)?)?$/)]],
+    phone: ['', [Validators.required, Validators.pattern(/^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/)]],
     type: ['consultation',],
   });
 
@@ -38,9 +38,6 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   private subscription: Subscription | null = null;
-
-  ngOnInit(): void {
-  }
 
   createRequests() {
     if (this.requestForm.valid && this.requestForm.value.name
@@ -83,9 +80,6 @@ export class FooterComponent implements OnInit, OnDestroy {
   call() {
     this.dialogRef = this.dialog.open(this.popup);
     this.dialogRef.backdropClick()
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
   }
 
   ngOnDestroy() {

@@ -31,14 +31,14 @@ header.header {
             margin-right: 30px;
             list-style: none;
 
-            &.active {
-              color: $blue-text-color;
-            }
-
             a {
               color: $gray-text-color;
               cursor: pointer;
               text-decoration: none;
+
+              &:focus {
+                color: $blue-text-color;
+              }
             }
           }
         }

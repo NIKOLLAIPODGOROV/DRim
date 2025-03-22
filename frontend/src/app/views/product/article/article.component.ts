@@ -65,10 +65,12 @@ get hasMoreThreeComments() {
       this.articleService.getArticle(params['url'])
         .subscribe(data => {
           this.article = data as ArticleType;
-
-          this.hasComments;
-
+if (this.article.comments && this.article.comments.length > 0) {
+  this.hasComments;
+}
+          if (this.article.comments && this.article.comments.length > 3) {
             this.hasMoreThreeComments;
+          }
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
