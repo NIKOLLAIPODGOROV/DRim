@@ -26,7 +26,10 @@
         cursor: pointer;
 
       &.active {
-        stroke: $blue-text-color;
+       // fill: $blue-text-color;
+        path {
+          stroke: $blue-text-color;
+        }
       }
       }
     }

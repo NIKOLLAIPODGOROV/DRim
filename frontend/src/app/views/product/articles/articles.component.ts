@@ -26,8 +26,8 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   activeParams: ActiveParamsType = {categories: []};
   appliedFilters: AppliedFilterType[] = [];
 
-   category: CategoryType | null = null;
-   categories: CategoryType[] = [];
+  category: CategoryType | null = null;
+  categories: CategoryType[] = [];
   article!: ArticleType;
 
   type: string | null = null;
@@ -84,7 +84,7 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
     this.categoryService.getCategoriesWithFilter()
       .subscribe(data => {
         this.categoriesWithType = data as CategoryWithTypeType[];
-       // console.log(data);
+        // console.log(data);
       })
 
     this.activatedRoute.queryParams
@@ -121,36 +121,49 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
 
             this.articles = data.items as ArticleType[];
 
-            if (this.popularArticles) {
-              this.articles = this.articles.map(article => {
-                const productInFavorite = this.popularArticles?.find(item => item.id === article.id);
-                if (productInFavorite) {
-                  // article.isInFavorite = true;
-                }
-                return article;
-              });
+            // if (this.popularArticles) {
+            //   this.articles = this.articles.map(article => {
+            //     const productInFavorite = this.popularArticles?.find(item => item.id === article.id);
+            //     if (productInFavorite) {
+            //       // article.isInFavorite = true;
+            //     }
+            //     return article;
+            //   });
+            // }
+
+
+
+            if (this.category && params['categories']) {
+              this.activeParams.categories = Array.isArray(params['categories']) ? params['categories'] : [params['categories']];
             }
+            if (this.categoryWithType && this.categoryWithType.categories
+              && this.categoryWithType.categories.length > 0 &&
+              this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
+              this.open = true;
+            }
+
+
 
           });
       });
 
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.activeParams = ActiveParamsUtils.processParams(params);
-
-      if (this.category && params['categories']) {
-        this.activeParams.categories = Array.isArray(params['categories']) ? params['categories'] : [params['categories']];
-      }
-      if (this.categoryWithType && this.categoryWithType.categories
-        && this.categoryWithType.categories.length > 0 &&
-        this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
-        this.open = true;
-      }
-    });
+    // this.activatedRoute.queryParams.subscribe(params => {
+    //   this.activeParams = ActiveParamsUtils.processParams(params);
+    //
+    //   if (this.category && params['categories']) {
+    //     this.activeParams.categories = Array.isArray(params['categories']) ? params['categories'] : [params['categories']];
+    //   }
+    //   if (this.categoryWithType && this.categoryWithType.categories
+    //     && this.categoryWithType.categories.length > 0 &&
+    //     this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
+    //     this.open = true;
+    //   }
+    // });
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {
     if (appliedFilter.url && this.category?.url === 'dizain' ) {
-       // delete this.activeParams[appliedFilter.url];
+      // delete this.activeParams[appliedFilter.url];
     } else {
       this.activeParams.categories = this.activeParams.categories.filter(item => item !== appliedFilter.url);
     }
@@ -195,15 +208,15 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
       const existingTypeInParams = this.activeParams.categories.find(item => item === url);
       if (existingTypeInParams && !isActive) {
         this.activeParams.categories = this.activeParams.categories.filter(item => item !== url);
+        this.activeParams.categories = [];
       } else if (!existingTypeInParams && isActive) {
         this.activeParams.categories.push(url);
         this.activeParams.categories = [...this.activeParams.categories, url];
       }
     } else if (isActive) {
       this.activeParams.categories = [url];
-      this.activeParams.categories = [''];
     } else {
-      this.activeParams.categories = [''];
+      this.activeParams.categories = [];
     }
 
     this.activeParams.pages = 1;

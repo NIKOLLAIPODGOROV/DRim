@@ -39,8 +39,8 @@ export class CountSelectorComponent {
     this.onCountViolatesChange.emit(this.violatesCount);
   }
 
-  dislikeCount(isActive: boolean) {
-    if (this.likesCount > 0 && !isActive) {
+  dislikeCount() {
+    if (this.likesCount > 0) {
       this.likesCount--;
     }
     this.dislikesCount++;
@@ -49,9 +49,9 @@ export class CountSelectorComponent {
     this._snackBar.open('Ваш голос учтен');
   }
 
-  likeCount(isActive: boolean) {
+  likeCount() {
     this.isActive = true;
-    if (this.dislikesCount > 0 && !isActive) {
+    if (this.dislikesCount > 0) {
       this.dislikesCount--;
     }
     this.likesCount++;
