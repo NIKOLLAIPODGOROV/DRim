@@ -95,6 +95,7 @@
             }
 
             &.active {
+              cursor: pointer;
               color: $gray-text-color;
             }
           }

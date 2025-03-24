@@ -21,11 +21,11 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
-  @Input()comments: CommentType[] = [];
-  @Input()comment: CommentType | null = null;
+  @Input() comments: CommentType[] = [];
+  @Input() comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
   @Input() offset: number | null = 3;
-  allCounts: number[] = [];
+  allCount: number | null = null;
   @Input() text!: string;
   @Input() action: string = '';
   @Output() commentAction: CommentActionType[] = [];
@@ -35,14 +35,30 @@ export class ArticleComponent implements OnInit, OnDestroy {
   likesCount: number = 0;
   dislikesCount: number = 0;
   isLogged: boolean = false;
+  isMoreThreeComments: boolean = false;
+  haveComments: boolean = false;
 
   get hasComments() {
-    return this.comments.length > 0;
+    if (this.allCount && this.commentsPerPage >= this.allCount) {
+      this.offset = this.allCount;
+      this.haveComments = true;
+      this.isMoreThreeComments = false;
+    }
+    return this.offset ;
   }
 
-get hasMoreThreeComments() {
-  return this.comments.length > this.commentsPerPage;
-}
+  get hasMoreThreeComments() {
+    if (this.allCount && this.commentsPerPage < this.allCount && this.allCount <= 10) {
+      this.isMoreThreeComments = true;
+       this.offset = this.allCount - this.commentsPerPage ;
+       if (this.offset <= this.commentsPerPage) {
+         this.hasComments
+         this.haveComments = true;
+         this.isMoreThreeComments = false;
+       }
+  }
+    return this.offset
+  }
 
   textForm = this.fb.group({
     text: ['']
@@ -65,12 +81,26 @@ get hasMoreThreeComments() {
       this.articleService.getArticle(params['url'])
         .subscribe(data => {
           this.article = data as ArticleType;
-if (this.article.comments && this.article.comments.length > 0) {
-  this.hasComments;
+if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPerPage)) {
+  this.isMoreThreeComments = false;
+} else {
+  this.isMoreThreeComments = true;
 }
-          if (this.article.comments && this.article.comments.length > 3) {
-            this.hasMoreThreeComments;
-          }
+          this.commentService.getComments(this.offset, this.article.id)
+            .subscribe(data => {
+              // this.allCount = [];
+              // for (let i = 1; i <= data.allCounts; i++) {
+              //   this.allCount.push(i);
+              // }
+              this.haveComments = true;
+
+              this.comments = data.comments as CommentType[];
+              if (this.comments ) {
+                this.comments = this.article.comments as CommentType[];
+              }
+              this.hasMoreThreeComments
+            });
+
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
@@ -78,6 +108,7 @@ if (this.article.comments && this.article.comments.length > 0) {
             });
 
           if (data.comments) {
+
             this.comments = data.comments as CommentType[];
 
             this.commentService.getArticleCommentActions(this.article.id)
@@ -96,28 +127,9 @@ if (this.article.comments && this.article.comments.length > 0) {
                     userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
                   };
                 });
-                // return this.comments;
               });
-          }
-
-           // if (this.offset && this.offset > 0) {
-           //    this.subscription = this.commentService.getComments(3, this.article.id)
-           //      .subscribe(data => {
-           //        this.allCounts = [];
-           //        for (let i = 1; i <= data.allCounts; i++) {
-           //          this.allCounts.push(i);
-           //        }
-           //        if (this.hasComments) {
-           //          this.noComments = true;
-           //        }
-           //        this.comments = data.comments as CommentType[];
-
-           //      // return this.article.comments;
-           //
-           //      });
-            //}
-
-            return this.article.comments;
+            }
+         // return this.article.comments;
         });
     });
   }
@@ -127,44 +139,68 @@ if (this.article.comments && this.article.comments.length > 0) {
       this._snackBar.open('Для добавление коментария необходимо авторизоваться');
       return;
     }
-      if (this.article && this.textForm.valid && this.textForm.value.text) {
-        this.commentService.addComment(this.textForm.value.text, this.article.id)
-          .subscribe({
-            next: (data: DefaultResponseType) => {
-              if ((data as DefaultResponseType).error) {
-                throw new Error(((data as DefaultResponseType).message));
-              }
-              this.textForm.reset();
-              this.hasComments;
-              this._snackBar.open('Комментарий добавлен');
-            },
-
-            error: (errorResponse: HttpErrorResponse) => {
-              if (errorResponse.error && errorResponse.error.message) {
-                this._snackBar.open(errorResponse.error.message);
-              } else {
-                this._snackBar.open('Ошибка добавления комментария');
-              }
+    if (this.article && this.textForm.valid && this.textForm.value.text) {
+      this.commentService.addComment(this.textForm.value.text, this.article.id)
+        .subscribe({
+          next: (data: DefaultResponseType) => {
+            if ((data as DefaultResponseType).error) {
+              throw new Error(((data as DefaultResponseType).message));
             }
-          });
-      } else {
-        !this.hasComments;
-        this.textForm.markAllAsTouched();
-        this._snackBar.open('Заполните необходимые поля');
-      }
+            this.textForm.reset();
+            this.haveComments = true;
+            this._snackBar.open('Комментарий добавлен');
+          },
 
-    this.commentService.getComments(0, this.article.id)
+          error: (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.error && errorResponse.error.message) {
+              this._snackBar.open(errorResponse.error.message);
+            } else {
+              this._snackBar.open('Ошибка добавления комментария');
+            }
+          }
+        });
+    } else {
+      this.haveComments = false;
+      this.textForm.markAllAsTouched();
+      this._snackBar.open('Заполните необходимые поля');
+    }
+
+    this.commentService.getComments(this.offset, this.article.id)
       .subscribe(data => {
-        this.allCounts = [];
-        for (let i = 1; i <= data.allCounts; i++) {
-          this.allCounts.push(i);
-        }
-          this.hasComments;
+        // this.allCount = [];
+        // for (let i = 1; i <= data.allCounts; i++) {
+        //   this.allCount.push(i);
+        // }
+        this.haveComments = true;
 
         this.comments = data.comments as CommentType[];
       });
+  }
 
-   // return this.article.comments;
+  downloadOtherComments() {
+    this.offset = 10;
+    this.hasComments;
+    this.hasMoreThreeComments
+    this.commentService.getComments(this.offset, this.article.id)
+      .subscribe(data => {
+        // this.allCounts = [];
+        // for (let i = 1; i <= data.allCounts; i++) {
+        //   this.allCounts.push(i);
+        // }
+
+        this.comments = data.comments as CommentType[];
+
+        this.comments = this.comments.map(comment => {
+          const userAction = this.commentAction.find(action => action.comment === comment.id);
+          return {
+            ...comment, // Добавляем данные комментария
+            userLiked: userAction?.action === 'like', // Был ли лайкнут
+            userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
+          };
+        });
+
+      });
+
   }
 
   ngOnDestroy() {

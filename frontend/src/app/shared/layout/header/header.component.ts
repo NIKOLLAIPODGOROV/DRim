@@ -8,6 +8,7 @@ import {UserInfoType} from "../../../../types/user-info.type";
 import {UserService} from "../../services/user.service";
 import {Subscription} from "rxjs";
 import {style} from "@angular/animations";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private _snackBar: MatSnackBar,
               private router: Router,
               private userService: UserService,
+              private loaderService: LoaderService,
   ) {
     this.isLogged = this.authService.getIsLoggedIn();
   }
@@ -30,6 +32,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private subscription: Subscription | null = null;
 
   ngOnInit(): void {
+    this.loaderService.show();
+
     this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = isLoggedIn;
     });

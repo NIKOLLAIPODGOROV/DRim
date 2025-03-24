@@ -8,6 +8,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {CommentComponent} from "./components/comment/comment.component";
 import {CountSelectorComponent} from "./components/count-selector/count-selector.component";
 import {MatDialogModule} from "@angular/material/dialog";
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import {MatDialogModule} from "@angular/material/dialog";
     CategoryFilterComponent,
     CommentComponent,
     CountSelectorComponent,
+    LoaderComponent,
   ],
   imports: [
     FormsModule,

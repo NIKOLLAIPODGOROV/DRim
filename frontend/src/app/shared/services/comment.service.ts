@@ -14,8 +14,8 @@ export class CommentService {
   constructor(private http: HttpClient) {
   }
 
-  getComments(offset: number | null, article: string): Observable<{ allCounts: number, comments: CommentType[] }> {
-    return this.http.get<{ allCounts: number, comments: CommentType[] }>(environment.api + 'comments?offset='+ offset + '&article=' + article);
+  getComments(offset: number | null, article: string): Observable<{ allCount: number, comments: CommentType[] }> {
+    return this.http.get<{ allCount: number, comments: CommentType[] }>(environment.api + 'comments?offset='+ offset + '&article=' + article);
   }
 
   addComment(text: string, article: string): Observable<DefaultResponseType> {
