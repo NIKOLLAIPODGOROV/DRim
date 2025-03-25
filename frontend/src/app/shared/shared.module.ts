@@ -9,6 +9,7 @@ import {CommentComponent} from "./components/comment/comment.component";
 import {CountSelectorComponent} from "./components/count-selector/count-selector.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import { LoaderComponent } from './components/loader/loader.component';
+import { PhoneMaskPipe } from './pipes/phone-mask.pipe';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     CommentComponent,
     CountSelectorComponent,
     LoaderComponent,
+    PhoneMaskPipe,
   ],
   imports: [
     FormsModule,
@@ -26,7 +28,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     ReactiveFormsModule,
     MatDialogModule,
   ],
-  exports: [ProductCardComponent, CategoryFilterComponent, CommentComponent, CountSelectorComponent,],
+  exports: [ProductCardComponent, CategoryFilterComponent, CommentComponent, CountSelectorComponent, PhoneMaskPipe,],
 })
 export class SharedModule {
 }

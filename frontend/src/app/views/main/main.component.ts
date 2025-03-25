@@ -12,6 +12,7 @@ import {RequestsType} from "../../../types/requests.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subject, Subscription, takeUntil} from "rxjs";
+import {Config} from "../../shared/enum/config";
 
 @Component({
   selector: 'app-main',
@@ -21,6 +22,11 @@ import {Subject, Subscription, takeUntil} from "rxjs";
 
 export class MainComponent implements OnInit, OnDestroy {
 
+  tell: string = Config.phone;
+  instagram: string = Config.instagramURL;
+  facebook: string = Config.facebookURL;
+  vk: string = Config.vkURL;
+  email: string = Config.email;
   isFormEmpty: boolean = false;
   popularArticles: ArticleType[] = [];
   article!: ArticleType;

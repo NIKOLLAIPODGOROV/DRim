@@ -7,8 +7,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {UserInfoType} from "../../../../types/user-info.type";
 import {UserService} from "../../services/user.service";
 import {Subscription} from "rxjs";
-import {style} from "@angular/animations";
 import {LoaderService} from "../../services/loader.service";
+import {Config} from "../../enum/config";
 
 @Component({
   selector: 'app-header',
@@ -17,6 +17,8 @@ import {LoaderService} from "../../services/loader.service";
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
+   tell: string = Config.phone;
+   instagram: string = Config.instagramURL;
   isLogged: boolean = false;
   user: UserInfoType | null = null;
 

@@ -9,6 +9,7 @@ import {RequestService} from "../../services/request.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Subscription} from "rxjs";
+import {Config} from "../../enum/config";
 
 @Component({
   selector: 'app-footer',
@@ -20,6 +21,11 @@ export class FooterComponent implements OnDestroy {
   @Input() categories: CategoryType[] = [];
   @Input() type!: string;
   isFormEmpty = false;
+  tell: string = Config.phone;
+  instagram: string = Config.instagramURL;
+  facebook: string = Config.facebookURL;
+  vk: string = Config.vkURL;
+  email: string = Config.email;
 
   requestForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[A-ЯЁ][а-яё]+(?:\s[а-яё]+)?)?)?$/)]],

@@ -12,11 +12,20 @@
                  placeholder="Электронная почта" formControlName="email">
         </div>
         <div class="auth-input">
-          <input type="password" class="input"
+          <input type="password" class="input" id="password" #input
                  [ngStyle]="{'border-color': loginForm.get('password')?.invalid
                   && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched) ? 'red' : ''}"
                  placeholder="Пароль" formControlName="password">
         </div>
+<!--        <div class="auth-checkbox">-->
+<!--          <input type="checkbox"-->
+
+<!-- [checked]="activeParams.types.includes(type.password)"-->
+<!--             (change)="updateFilterParam(type.text, input.checked)"-->
+
+<!--id="showPassword" formControlName="showPassword">-->
+<!--          <label for="showPassword">Показать пароль</label>-->
+<!--        </div>-->
         <div class="auth-checkbox">
           <input type="checkbox" id="remember" formControlName="rememberMe">
           <label for="remember">Запомнить меня</label>

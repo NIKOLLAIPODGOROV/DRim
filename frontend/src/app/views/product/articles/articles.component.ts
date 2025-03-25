@@ -4,13 +4,11 @@ import {ActiveParamsType} from "../../../../types/active-params.type";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ActiveParamsUtils} from "../../../shared/utils/active-params.utils";
 import {AppliedFilterType} from "../../../../types/applied-filter.type";
-import {debounceTime, Subscription,} from "rxjs";
-import {AuthService} from "../../../core/auth/auth.service";
+import { Subscription,} from "rxjs";
 import {ArticleService} from "../../../shared/services/article.service";
 import {ArticleType} from "../../../../types/article.type";
 import {CategoryType} from "../../../../types/category.type";
 import {CategoryWithTypeType} from "../../../../types/category-with-type.type";
-import {style} from "@angular/animations";
 
 @Component({
   selector: 'articles',
@@ -34,12 +32,10 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   pages: number[] = [];
   open: boolean = false;
   isActive: boolean = false;
-  popularArticles: ArticleType[] = [];
 
   constructor(private articleService: ArticleService,
               private categoryService: CategoryService,
               private activatedRoute: ActivatedRoute,
-              private authService: AuthService,
               private router: Router) {
   }
 
@@ -47,10 +43,9 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      this.articleService.getArticles(params['url'])
+    this.subscription = this.articleService.getArticles(params['url'])
         .subscribe(data => {
           this.articles = data.items as ArticleType[];
-         // this.processCatalog();
         });
     });
 
@@ -84,13 +79,10 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
     this.categoryService.getCategoriesWithFilter()
       .subscribe(data => {
         this.categoriesWithType = data as CategoryWithTypeType[];
-        // console.log(data);
       })
 
     this.activatedRoute.queryParams
-      // .pipe(
-      //   debounceTime(500)
-      // )
+
       .subscribe(params => {
 
         this.activeParams = ActiveParamsUtils.processParams(params);
@@ -129,10 +121,8 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
               this.categoryWithType.categories.some(category => this.activeParams.categories.find(item => category.url === item))) {
               this.open = true;
             }
-
           });
       });
-
   }
 
   removeAppliedFilter(appliedFilter: AppliedFilterType) {
@@ -178,18 +168,21 @@ export class ArticlesComponent implements OnInit, OnDestroy  {
   }
 
   updateFilterParam(url: string, isActive: boolean) {
-
+    this.isActive === isActive;
     if (this.activeParams.categories && this.activeParams.categories.length > 0) {
       const existingTypeInParams = this.activeParams.categories.find(item => item === url);
       if (existingTypeInParams && !isActive) {
+
         this.activeParams.categories = this.activeParams.categories.filter(item => item !== url);
       } else if (!existingTypeInParams && isActive) {
-        this.activeParams.categories.push(url);
         this.activeParams.categories = [...this.activeParams.categories, url];
       }
     } else if (isActive) {
       this.activeParams.categories = [url];
-    } else {
+        this.isActive = true;
+
+    } else if(!isActive) {
+      this.isActive = false;
       this.activeParams.categories = [];
     }
 
