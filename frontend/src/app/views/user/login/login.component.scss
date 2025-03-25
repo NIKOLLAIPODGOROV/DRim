@@ -1,4 +1,5 @@
 @import "../../../../assets/styles/auth-form";
+@import "~@fortawesome/fontawesome-free/css/all.css";
 
 .login .container {
   display: flex;
@@ -7,6 +8,25 @@
   .auth-form {
     margin-top: 106px;
     margin-bottom: 92px;
+
+    .auth-input {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      margin-right: 5px;
+
+        .button-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-left: 5px !important;
+          .fa {
+            font-size: 34px;
+            width: 46px;
+            height: 46px;
+          }
+      }
+    }
 
   }
 

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../../../core/auth/auth.service";
 import {FormBuilder, Validators} from "@angular/forms";
@@ -6,13 +6,19 @@ import {LoginResponseType} from "../../../../types/login-response.type";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatIcon} from "@angular/material/icon";
+
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+
+  password: string = '';
+
+  show:boolean = false;
 
   loginForm = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
@@ -24,6 +30,9 @@ export class LoginComponent {
               private authService: AuthService,
               private _snackBar: MatSnackBar,
               private router: Router) {
+  }
+  ngOnInit() {
+    this.password = 'password';
   }
 
   login(): void {
@@ -59,6 +68,16 @@ export class LoginComponent {
             }
           }
         });
+    }
+  }
+
+  onClick() {
+    if (this.password === 'password') {
+      this.password = 'text';
+      this.show = true;
+    } else {
+      this.password = 'password';
+      this.show = false;
     }
   }
 
