@@ -16,6 +16,5 @@ export class ProductCardComponent {
 
   serverStaticPath = environment.serverStaticPath;
 
-  constructor() {
-  }
+  constructor() { }
 }

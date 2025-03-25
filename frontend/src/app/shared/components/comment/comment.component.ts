@@ -1,11 +1,9 @@
-import {Component, Input, OnDestroy, Output} from '@angular/core';
+import {Component, Input, OnDestroy} from '@angular/core';
 import {CommentType} from "../../../../types/comment.type";
-import {AuthService} from "../../../core/auth/auth.service";
 import {CommentService} from "../../services/comment.service";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {EActions} from "../../../constants/enums";
 import {Subscription} from "rxjs";
-import {CommentActionType} from "../../../../types/comment-action.type";
 
 @Component({
   selector: 'comment',
@@ -14,46 +12,41 @@ import {CommentActionType} from "../../../../types/comment-action.type";
 })
 export class CommentComponent implements OnDestroy {
 
-  action: string = '';
-
-  @Input() likesCount: number | null = null;
-  @Input() dislikesCount: number | null = null;
-  @Input() violatesCount: number | null = null;
-  @Input() countLike: string = '';
-  @Input() countDislike: string = '';
-  @Input() comments: CommentType[] = [];
   @Input() comment!: CommentType;
-  @Output() commentAction: CommentActionType[] = [];
-  isLoggedIn: boolean = false;
+  @Input() userAction: string | undefined = undefined;
 
   protected readonly EActions = EActions;
-  constructor(private authService: AuthService,
-              private commentService: CommentService) {
-  }
+
+  constructor(private commentService: CommentService) { }
 
   private subscription: Subscription | null = null;
 
-  updateCount(value: number, action: string) {
-      this.likesCount = value;
-      this.action = action;
-      if (this.likesCount && this.comment) {
-        this.commentService.applyAction(this.comment.id, this.action)
-          .subscribe((data: DefaultResponseType) => {
-            if ((data as DefaultResponseType).error !== undefined) {
-              throw new Error((data as DefaultResponseType).message);
-            }
-          // return this.action;
-          });
-      }
-      if (this.dislikesCount) {
-        this.dislikesCount++
-      } else if (this.violatesCount){
-        this.violatesCount++;
-      }
-    return this.action;
-  }
+  updateCount(action: 'like' | 'dislike' | 'violate') {
+    const isRemoving = this.userAction === action; // Убираем реакцию, если уже была
 
-  ngOnDestroy() {
-    this.subscription?.unsubscribe()
+    if (this.userAction === 'like' && this.comment.likesCount > 0) {
+      this.comment.likesCount--; //Снимаем лайк, если был
+    }
+    if (this.userAction === 'dislike' && this.comment.dislikesCount > 0) {
+      this.comment.dislikesCount--; // Снимаем дизлайк если, был
+    }
+
+    if (!isRemoving) {
+      action === 'like' ? this.comment.likesCount++ : this.comment.dislikesCount++; // Добавляем новую реакцию
+      this.userAction = action;
+    } else {
+      this.userAction = undefined; // Полностью убираем реакцию
+    }
+
+    this.subscription = this.commentService.applyAction(this.comment.id, isRemoving ? 'remove' : action)
+      .subscribe((data: DefaultResponseType) => {
+        if (data.error) {
+          throw new Error(data.message);
+        }
+      });
   }
+    ngOnDestroy() {
+      this.subscription?.unsubscribe()
+    }
 }
+

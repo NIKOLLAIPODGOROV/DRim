@@ -391,6 +391,7 @@
 
         .contacts-info-item {
 
+
           .contacts-info-item-head {
             font-weight: 500;
             font-size: 20px;
@@ -402,6 +403,11 @@
             font-weight: 400;
             font-size: 14px;
             margin-bottom: 20px;
+            a {
+              text-decoration: none;
+              color: $gray-text-color;
+
+            }
 
             &:last-child svg {
               margin-right: 20px;

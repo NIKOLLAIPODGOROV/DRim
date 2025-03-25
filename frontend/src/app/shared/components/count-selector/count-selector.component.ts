@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {CommentType} from "../../../../types/comment.type";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
@@ -14,18 +13,11 @@ export class CountSelectorComponent {
   @Input() likesCount: number = 0;
   @Input() violatesCount: number = 0;
 
-  @Input()comments: CommentType[] = [];
-  @Input()comment: CommentType | null = null;
-
-  isActive: boolean = false;
   @Output() onCountLikesChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() onCountDislikesChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() onCountViolatesChange: EventEmitter<number> = new EventEmitter<number>();
 
-
-
-  constructor(private _snackBar: MatSnackBar) {
-  }
+  constructor(private _snackBar: MatSnackBar) { }
 
   countChangeLike() {
     this.onCountLikesChange.emit(this.likesCount);
@@ -40,31 +32,25 @@ export class CountSelectorComponent {
   }
 
   dislikeCount() {
-    if (this.likesCount > 0) {
-      this.likesCount--;
-    }
-    this.dislikesCount++;
     this.action = 'dislike';
     this.countChangeDisLike();
     this._snackBar.open('Ваш голос учтен');
   }
 
   likeCount() {
-    this.isActive = true;
-    if (this.dislikesCount > 0) {
-      this.dislikesCount--;
-    }
-    this.likesCount++;
     this.action = 'like';
     this.countChangeLike();
     this._snackBar.open('Ваш голос учтен');
   }
 
   violateCount() {
-    this.violatesCount++;
     this.action = 'violate';
     this.countChangeViolate();
     this._snackBar.open('Жалоба отправлена');
-  }
 
+    if (this.action) {
+      throw new Error('Жалоба уже отправлена');
+    }
+    this._snackBar.open('Жалоба уже отправлена');
+  }
 }

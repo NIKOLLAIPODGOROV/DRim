@@ -21,13 +21,13 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article!: ArticleType;
   articles: ArticleType[] = [];
-  @Input() comments: CommentType[] = [];
-  @Input() comment: CommentType | null = null;
+  comments: CommentType[] = [];
+  comment: CommentType | null = null;
   relatedArticles: ArticleType[] = [];
-  @Input() offset: number | null = 3;
+  offset: number | null = 3;
   allCount: number | null = null;
-  @Input() text!: string;
-  @Input() action: string = '';
+  text!: string;
+  action: string = '';
   @Output() commentAction: CommentActionType[] = [];
 
   commentsPerPage = 3;
@@ -44,19 +44,18 @@ export class ArticleComponent implements OnInit, OnDestroy {
       this.haveComments = true;
       this.isMoreThreeComments = false;
     }
-    return this.offset ;
+    return this.offset;
   }
 
-  get hasMoreThreeComments() {
+  get hasMoreThanCommentsPerPage() {
     if (this.allCount && this.commentsPerPage < this.allCount && this.allCount <= 10) {
       this.isMoreThreeComments = true;
-       this.offset = this.allCount - this.commentsPerPage ;
-       if (this.offset <= this.commentsPerPage) {
-         this.hasComments
-         this.haveComments = true;
-         this.isMoreThreeComments = false;
-       }
-  }
+      this.offset = this.allCount - this.commentsPerPage;
+      if (this.offset <= this.commentsPerPage) {
+        this.haveComments = false;
+        this.isMoreThreeComments = false;
+      }
+    }
     return this.offset
   }
 
@@ -76,31 +75,33 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription | null = null;
 
+  commentActions: CommentActionType[] = [];
+  getUserAction(commentId: string): string | undefined {
+    return this.commentActions.find(action => action.comment === commentId)?.action;
+  }
+
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.articleService.getArticle(params['url'])
         .subscribe(data => {
           this.article = data as ArticleType;
-if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPerPage)) {
-  this.isMoreThreeComments = false;
-} else {
-  this.isMoreThreeComments = true;
-}
-          this.commentService.getComments(this.offset, this.article.id)
+           if (this.article.commentsCount && (this.article.commentsCount > this.commentsPerPage)) {
+            this.isMoreThreeComments = true;
+             this.haveComments = true;
+          } else {
+             this.isMoreThreeComments = false;
+           }
+          this.haveComments = !!(this.article.commentsCount && (this.article.commentsCount > 0));
+
+            this.commentService.getComments(this.offset, this.article.id)
             .subscribe(data => {
-              // this.allCount = [];
-              // for (let i = 1; i <= data.allCounts; i++) {
-              //   this.allCount.push(i);
-              // }
-              this.haveComments = true;
 
               this.comments = data.comments as CommentType[];
-              if (this.comments ) {
+              if (this.comments) {
                 this.comments = this.article.comments as CommentType[];
               }
-              this.hasMoreThreeComments
+              this.hasMoreThanCommentsPerPage
             });
-
 
           this.articleService.getRelatedArticles(this.article.url)
             .subscribe((data: ArticleType[]) => {
@@ -116,20 +117,11 @@ if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPe
                 if ((data as DefaultResponseType).error) {
                   throw new Error(((data as DefaultResponseType).message));
                 }
-                //здесь нужно сохранить данные о действиях и соотнести их с данными о коментариях по id
-                this.commentAction = data as CommentActionType[];
 
-                this.comments = this.comments.map(comment => {
-                  const userAction = this.commentAction.find(action => action.comment === comment.id);
-                  return {
-                    ...comment, // Добавляем данные комментария
-                    userLiked: userAction?.action === 'like', // Был ли лайкнут
-                    userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
-                  };
-                });
+                this.commentActions = data as CommentActionType[];
+
               });
-            }
-         // return this.article.comments;
+          }
         });
     });
   }
@@ -167,10 +159,7 @@ if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPe
 
     this.commentService.getComments(this.offset, this.article.id)
       .subscribe(data => {
-        // this.allCount = [];
-        // for (let i = 1; i <= data.allCounts; i++) {
-        //   this.allCount.push(i);
-        // }
+
         this.haveComments = true;
 
         this.comments = data.comments as CommentType[];
@@ -178,15 +167,15 @@ if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPe
   }
 
   downloadOtherComments() {
-    this.offset = 10;
-    this.hasComments;
-    this.hasMoreThreeComments
+    if (this.offset && this.offset < this.commentsPerPage) {
+      this.offset = this.allCount;
+    } else {
+      this.isMoreThreeComments = false;
+    }
+   this.hasComments;
+   this.hasMoreThanCommentsPerPage
     this.commentService.getComments(this.offset, this.article.id)
       .subscribe(data => {
-        // this.allCounts = [];
-        // for (let i = 1; i <= data.allCounts; i++) {
-        //   this.allCounts.push(i);
-        // }
 
         this.comments = data.comments as CommentType[];
 
@@ -198,9 +187,7 @@ if (this.article.commentsCount && (this.article.commentsCount  < this.commentsPe
             userDisliked: userAction?.action === 'dislike' // Был ли дизлайкнут
           };
         });
-
       });
-
   }
 
   ngOnDestroy() {
